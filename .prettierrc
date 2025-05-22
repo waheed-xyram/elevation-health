@@ -1,0 +1,8 @@
+{
+  "singleQuote": true,
+  "trailingComma": "all",
+  "formatOnSave": true,
+  "semi": true,
+  "parser":"flow",
+  "endOfLine": "lf"
+}

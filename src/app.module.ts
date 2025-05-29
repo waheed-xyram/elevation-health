@@ -5,6 +5,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { Connection } from 'mongoose';
+import { AssessmentModule } from './assessment/assessment.module';
+import { SeederModule } from './seeder/seeder.module';
+import { AuthModule } from './auth/auth.module';
+import { APP_GUARD, Reflector } from '@nestjs/core';
+import { JwtAuthGuard } from './common/guards/jwt_auth.gaurd';
+import { AuthService } from './auth/auth.service';
 
 @Module({
   imports: [
@@ -23,8 +29,19 @@ import { Connection } from 'mongoose';
     }),
 
     UserModule,
+    AssessmentModule,
+    SeederModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useFactory: (authService: AuthService, reflector: Reflector) =>
+        new JwtAuthGuard(authService, reflector),
+      inject: [AuthService, Reflector],
+    },
+  ],
 })
 export class AppModule {}

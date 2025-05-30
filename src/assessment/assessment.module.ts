@@ -8,6 +8,7 @@ import {
   AssessmentResponse,
   AssessmentResponseSchema,
 } from './schemas/assessment-response.schema';
+import { AwsModule } from 'src/aws/s3.module';
 
 @Module({
   controllers: [AssessmentController],
@@ -17,6 +18,7 @@ import {
       { name: Assessment.name, schema: AssessmentSchema },
       { name: AssessmentResponse.name, schema: AssessmentResponseSchema },
     ]),
+    AwsModule,
   ],
 })
 export class AssessmentModule {}

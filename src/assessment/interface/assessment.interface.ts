@@ -1,3 +1,5 @@
+import { Document } from 'mongoose';
+
 export interface IAssessment {
   name: string;
   description: string;
@@ -15,13 +17,26 @@ export interface IAssessment {
   reporting?: string;
 }
 
-export interface IAssessmentResponse {
-  _id: string;
-  assessment: string;
-  description: string;
-  status: IAssessmentResponse;
+export interface IStepQuestion {
+  value: string | null;
+  score?: number;
+  level?: string;
+  ignore?: boolean;
 }
 
+export interface IAssessmentResponseQuestion {
+  step_0?: Record<string, IStepQuestion>;
+  step_1?: Record<string, IStepQuestion>;
+  step_2?: Record<string, IStepQuestion>;
+  step_3?: Record<string, IStepQuestion>;
+}
+
+export interface IAssessmentResponse extends Document {
+  assessmentResponse: IAssessmentResponseQuestion;
+  status: IAssessmentStatus;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
 export interface IAssessmentStatus {
   ToDO: string;
   InProgress: string;

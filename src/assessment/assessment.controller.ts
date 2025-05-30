@@ -1,19 +1,22 @@
-import { Controller, Get, Post, Body, Req, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Req, Param, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { AssessmentService } from './assessment.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateAssessmentDto } from './dto/create-assessment.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { S3Service } from '../aws/s3.service';
+import { Express } from 'express';
 
 @ApiTags('Assessments')
 @ApiBearerAuth()
 @Controller('assessment')
 export class AssessmentController {
-  constructor(private readonly assessmentService: AssessmentService) {}
+  constructor(private readonly assessmentService: AssessmentService, private readonly s3Service: S3Service) {}
 
 
   @Get()
 findAll(@Req() req: Request & { user?: { userid: string } }) {
   const userId = req.user?.userid;
-  console.log('Logged-in user ID:', userId);
+
   return this.assessmentService.findAll(userId);
 }
 
@@ -23,6 +26,29 @@ findAll(@Req() req: Request & { user?: { userid: string } }) {
   @Req() req:Request & {user?: {userid:string}},
   @Param('assessmentId') assessmentId: string){
     const userId = req.user?.userid;
+    
     return this.assessmentService.saveAssessmentResponse(assessmentResponse, userId, assessmentId)
   }
+
+  @Post('upload/:questionId')
+@UseInterceptors(FileInterceptor('file'))
+async uploadFile(
+  @UploadedFile() file: Express.Multer.File,
+  @Req() req: Request & { user?: { userid: string } },
+  @Param('questionId') questionId: string,
+) {
+  const userId = req.user?.userid;
+  const fileKey = `${questionId}-${userId}-${file.originalname}`;
+
+  await this.s3Service.uploadFile(
+    file.buffer,        
+    fileKey,            
+    file.mimetype);    
+
+  const url = `https://${process.env.S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
+
+  return { url };
 }
+
+}
+

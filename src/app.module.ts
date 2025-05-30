@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { APP_GUARD, Reflector } from '@nestjs/core';
 import { JwtAuthGuard } from './common/guards/jwt_auth.gaurd';
 import { AuthService } from './auth/auth.service';
+import { AwsModule } from './aws/s3.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { AuthService } from './auth/auth.service';
     AssessmentModule,
     SeederModule,
     AuthModule,
+    AwsModule,
   ],
   controllers: [AppController],
   providers: [

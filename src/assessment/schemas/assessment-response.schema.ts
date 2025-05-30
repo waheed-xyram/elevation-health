@@ -1,10 +1,10 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Document } from 'mongoose';
 
 export type AssessmentResponseDocument = HydratedDocument<AssessmentResponse>;
 
 @Schema({ timestamps: true })
-export class AssessmentResponse {
+export class AssessmentResponse extends Document {
   @Prop()
   userId: string;
 
@@ -15,7 +15,13 @@ export class AssessmentResponse {
   assessmentResponse: string;
 
   @Prop()
+  assessmentPercentage: string;
+
+  @Prop()
   status: string;
+
+  updatedAt?: Date;
+  createdAt?: Date;
 }
 
 export const AssessmentResponseSchema =

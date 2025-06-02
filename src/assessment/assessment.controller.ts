@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Req, Param, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Req, Param, UseInterceptors, UploadedFile, Query } from '@nestjs/common';
 import { AssessmentService } from './assessment.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateAssessmentDto } from './dto/create-assessment.dto';
@@ -14,41 +14,51 @@ export class AssessmentController {
 
 
   @Get()
-findAll(@Req() req: Request & { user?: { userid: string } }) {
-  const userId = req.user?.userid;
+  findAll(@Req() req: Request & { user?: { userId: string } }) {
+    const userId = req.user?.userId;
 
-  return this.assessmentService.findAll(userId);
-}
+    return this.assessmentService.findAll(userId);
+  }
 
   @Post('calculate-score/:assessmentId')
   saveAssessmentScore(
   @Body() assessmentResponse: CreateAssessmentDto,
-  @Req() req:Request & {user?: {userid:string}},
+  @Req() req:Request & {user?: {userId:string}},
   @Param('assessmentId') assessmentId: string){
-    const userId = req.user?.userid;
-    
+    const userId = req.user?.userId;
+
     return this.assessmentService.saveAssessmentResponse(assessmentResponse, userId, assessmentId)
   }
 
+  @Get('report')
+  generateAssessmentReport(
+    @Query('assessmentId') assessmentId:string,
+    @Req() req:Request & {user?: {userId: string}}){
+    const userId = req.user?.userId;
+
+    console.log('----',assessmentId, userId)
+    return this.assessmentService.generateAssessmentReport(assessmentId, userId)
+  }
+
   @Post('upload/:questionId')
-@UseInterceptors(FileInterceptor('file'))
-async uploadFile(
-  @UploadedFile() file: Express.Multer.File,
-  @Req() req: Request & { user?: { userid: string } },
-  @Param('questionId') questionId: string,
-) {
-  const userId = req.user?.userid;
-  const fileKey = `${questionId}-${userId}-${file.originalname}`;
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: Request & { user?: { userId: string } },
+    @Param('questionId') questionId: string,
+  ) {
+    const userId = req.user?.userId;
+    const fileKey = `${questionId}-${userId}-${file.originalname}`;
 
-  await this.s3Service.uploadFile(
-    file.buffer,        
-    fileKey,            
-    file.mimetype);    
+    await this.s3Service.uploadFile(
+      file.buffer,        
+      fileKey,            
+      file.mimetype);    
 
-  const url = `https://${process.env.S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
+    const url = `https://${process.env.S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
 
-  return { url };
-}
+    return { url };
+  }
 
 }
 

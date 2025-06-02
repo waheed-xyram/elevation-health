@@ -59,3 +59,12 @@ export interface ISteps {
   properties: object;
   required: [object];
 }
+
+export interface IAssessmentResult {
+  assessmentId: string;
+  status: string;
+  updatedAt: string | null;
+  name: string;
+  description: string;
+  assessmentPercentage: string;
+}

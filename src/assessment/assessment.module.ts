@@ -8,7 +8,7 @@ import {
   AssessmentResponse,
   AssessmentResponseSchema,
 } from './schemas/assessment-response.schema';
-import { AwsModule } from 'src/aws/s3.module';
+import { AwsModule } from '../aws/s3.module';
 
 @Module({
   controllers: [AssessmentController],

@@ -44,6 +44,8 @@ export class Assessment {
 
   @Prop()
   reporting: string;
+
+  updatedAt?: Date;
 }
 
 export const AssessmentSchema = SchemaFactory.createForClass(Assessment);

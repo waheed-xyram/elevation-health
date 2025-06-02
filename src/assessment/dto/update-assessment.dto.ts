@@ -15,6 +15,6 @@ export class UpdateAssessmentDto extends PartialType(CreateAssessmentDto) {
    @ApiProperty({enum:['ToDo', 'InProgress', 'Completed']})
     @IsNotEmpty()
     @IsString()
-    @IsIn(['ToDo', 'InProgress', 'Completed'])
-    status: 'ToDo' | 'InProgress' | 'Completed';
+    @IsIn(['ToDo', 'In Progress', 'Completed'])
+    status: 'ToDo' | 'In Progress' | 'Completed';
 }

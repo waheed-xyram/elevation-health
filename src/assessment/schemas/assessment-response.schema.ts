@@ -1,26 +1,31 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Document } from 'mongoose';
+import { HydratedDocument, Document, Types } from 'mongoose';
 
 export type AssessmentResponseDocument = HydratedDocument<AssessmentResponse>;
 
 @Schema({ timestamps: true })
 export class AssessmentResponse extends Document {
-  @Prop()
+  @Prop({type: String, required: true})
   userId: string;
 
-  @Prop()
+  @Prop({type:String, required:true})
   assessmentId: string;
 
-  @Prop()
+  @Prop({type: String, required: true})
   assessmentResponse: string;
 
   @Prop()
   assessmentPercentage: string;
 
   @Prop()
+  assessmentOverallPercentage: string;
+
+  @Prop({ type: String, required: true})
   status: string;
 
   updatedAt?: Date;
+
+  @Prop({type: Date, default: Date.now})
   createdAt?: Date;
 }
 

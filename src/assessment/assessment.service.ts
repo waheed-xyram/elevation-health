@@ -5,6 +5,7 @@ import {Assessment} from './schemas/assessment.schema'
 import { AssessmentResponse } from './schemas/assessment-response.schema';
 import {Model} from 'mongoose';
 import { CreateAssessmentDto } from './dto/create-assessment.dto';
+import { IAssessmentResult, IStepQuestion } from './interface/assessment.interface';
 
 
 @Injectable()
@@ -17,73 +18,74 @@ export class AssessmentService {
 
   async findAll(userId) {
     try {
-      const respondantAssessment = await this.assessmentResponseModel.find({ userId }).exec();
-      const assessments = await this.assessmentModel.find({ userId }).select('name description status').exec();
-  
-      if (respondantAssessment.length > 0) {
-        const [assessmentResponse] = respondantAssessment.map(res => [JSON.parse(res.assessmentResponse), res.status, res.updatedAt]);
-        const response = assessmentResponse[0]; 
-  
-        let totalQuestions = 0;
-        let attemptedQuestions = 0;
-        const stepStats = {};
-  
-        for (const stepKey in response) {
-          const step = response[stepKey];
-          let stepTotal = 0;
-          let stepAttempted = 0;
-          let stepScore = 0;
-  
-          for (const questionKey in step) {
-            const answer = step[questionKey];
-  
-            if (!answer.ignore) {
-              stepTotal++;
-              totalQuestions++;
-  
-              if (answer.value !== null) {
-                stepAttempted++;
-                attemptedQuestions++;
-  
-                if (typeof answer.score === 'number') {
-                  stepScore += answer.score;
-                }
-              }
+
+      const respondantAssessment = await this.assessmentResponseModel.aggregate([
+        {$match:{userId:userId}},{
+          $addFields:{
+            assessmentObjectId:{$toObjectId:"$assessmentId"}
+          }
+        },
+        {$lookup:{
+          from: 'assessments',
+          localField:'assessmentObjectId',
+          foreignField:'_id', 
+          as:'assessmentDetails'}
+        },{$unwind:'$assessmentDetails'},{
+          $match:{
+            'assessmentDetails.assessmentValidity':{$gt: new Date()},
+            'assessmentDetails.isActive':true
+          }
+        },{
+          $addFields:{
+            assessmentDetails:{
+              name:'$assessmentDetails.name',
+              description:'$assessmentDetails.description',
+              assessmentVersion:'$assessmentDetails.assessmentVersion'
             }
           }
+        }]).exec();
+
+      const assessments = await this.assessmentModel.find().select('_id name description status assessmentPercentage updatedAt').lean();
+
+      const modifiedAssessments= assessments.map( res => ({...res, 'assessmentPercentage':'0%', 'status':'ToDo'}))
   
-          const stepPercentage = stepTotal > 0 ? (stepAttempted / stepTotal) * 100 : 0;
-  
-          stepStats[stepKey] = {
-            stepTotal,
-            stepAttempted,
-            stepPercentage: (stepPercentage > 0) ? `${Math.round(stepPercentage)}%`: `0%`,
-            stepScore,
-          };
-        }
-  
-        const overallPercentage = totalQuestions > 0 ? (attemptedQuestions / totalQuestions) * 100 : 0;
-  
-        const enhancedAssessments = assessments.map(assessment => {
-          const obj = assessment.toObject();
-        
-          return {
-            ...obj,
-            status: assessmentResponse[1],
-            updatedAt: assessmentResponse[2],
-            overallStats: {
-              totalQuestions,
-              attemptedQuestions,
-              percentageAnswered: (overallPercentage > 0) ? `${Math.round(overallPercentage)}%`: `0%`,
-            },
-          };
-        });
-        
-        return enhancedAssessments;
+      
+      if (respondantAssessment.length > 0) {
+
+        const assessmentResults: IAssessmentResult[] = [];
+
+        respondantAssessment.forEach(res => {
+          
+          const assessmentResult: IAssessmentResult = {
+              assessmentId: res.assessmentId,
+              status: res.status,
+              updatedAt: res.updatedAt,
+              name:res.assessmentDetails.name,
+              description: res.assessmentDetails.description,
+              assessmentPercentage: res.assessmentOverallPercentage
+          }
+          
+          assessmentResults.push(assessmentResult)
+      })
+
+      const respondedAssessmentIds = new Set(assessmentResults.map( res => res.assessmentId.toString()));
+
+      const allResponses = modifiedAssessments.filter( res => !respondedAssessmentIds.has(res._id.toString()))
+      .map( res => ({
+        assessmentId: res._id,
+              status: 'ToDo',
+              updatedAt: res.updatedAt,
+              name:res.name,
+              description: res.description,
+              assessmentPercentage: '0%'
+      }))
+
+      return [...allResponses, ...assessmentResults];
         
       }
-  
-      return assessments;
+      
+
+      return modifiedAssessments;
     } catch (error) {
       throw new Error(`Failed to fetch assessments: ${error?.message ?? error}`);
     }
@@ -107,6 +109,8 @@ export class AssessmentService {
         status: assessmentResponse.status,
         assessmentResponse: JSON.stringify(assessmentResponse.assessmentResponse),
         assessmentPercentage: JSON.stringify(assessmentScore.assessmentPercentage),
+        assessmentOverallPercentage: `${assessmentScore.assessmentOverallPercentage}%` || '0%',
+        createdAt: new Date()
       });
       
       return {
@@ -123,15 +127,14 @@ export class AssessmentService {
 
   async updateAssessmentResponse(assessmentResponse: CreateAssessmentDto, userId: string, assessmentId: string){
     try {
-      
-      
-      
       const assessmentCalculation = this.calculateAssessmentScore (assessmentResponse.assessmentResponse)
 
       await this.assessmentResponseModel.updateOne({userId, assessmentId},{$set:{
         status: assessmentResponse.status, 
         assessmentResponse:JSON.stringify( assessmentResponse.assessmentResponse),
-        assessmentPercentage:JSON.stringify(assessmentCalculation.assessmentPercentage)}})
+        assessmentPercentage:JSON.stringify(assessmentCalculation.assessmentPercentage),
+        assessmentOverallPercentage: `${assessmentCalculation.assessmentOverallPercentage}%` || '0%',
+        updatedAt: new Date()}})
 
       const updatedDoc = await this.assessmentResponseModel.findOne({ userId, assessmentId }).lean();
       
@@ -182,15 +185,13 @@ calculateAssessmentScore(assessmentResponse: any) {
       for (const [stepkey, question] of Object.entries(assessmentResponse)) {
         let stepScore = 0;
         let completedQuestions = 0;
-        let totalRelevantQuestions = 0; // Only count questions that are not ignored
+        let totalRelevantQuestions = 0; 
 
         for (const value of Object.values(question)) {
           if (value && typeof value === 'object') {
-            // Count all questions that are not ignored
             if (!value.ignore) {
               totalRelevantQuestions++;
               
-              // Count completed questions (those with scores)
               if ('score' in value) {
                 stepScore += value.score;
                 completedQuestions++;
@@ -216,6 +217,34 @@ calculateAssessmentScore(assessmentResponse: any) {
   } catch (error) {
     console.log(`Error while calculating assessment score: ${error}`);
     throw new Error(`Failed to calculate assessment score: ${error}`);
+  }
+}
+
+async generateAssessmentReport(assessmentId: string, userId: string){
+  try {
+    const respondantAssessments = await this.assessmentResponseModel.find({assessmentId, userId}).lean();
+
+    const assessmentScoreObj = {};
+    respondantAssessments.forEach(res => {
+      const response = JSON.parse(res.assessmentResponse);
+      for (const [step, questions] of Object.entries(response)) {
+        const level = [];
+        if (questions && typeof questions === 'object' && !Array.isArray(questions)) {
+          for (const ans in questions) {
+            const question = questions[ans] as IStepQuestion;
+            level.push({ level: question?.level || null});
+          }
+          assessmentScoreObj[step] = level;
+        }
+        const assessmentPercentage = JSON.parse(res.assessmentPercentage)
+        assessmentScoreObj[`${step}_percentage`] =  `${assessmentPercentage[step]}%`
+      }
+      assessmentScoreObj['OverallScore'] = res.assessmentOverallPercentage;
+    })
+
+    return assessmentScoreObj;
+  } catch (error) {
+    throw new Error(`Failed to generate assessment Report: ${error}`)
   }
 }
 }

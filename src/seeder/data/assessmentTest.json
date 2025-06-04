@@ -1,0 +1,2614 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Elevation Health Assessment Test",
+    "description": "Healthcare Evaluation Test Assessment with 49 questions across 4 categories",
+    "type": "object",
+    "assessmentVersion": "v2.0",
+    "assessmentValidity": "2030-12-31T00:00:00.000Z",
+    "isActive": true,
+    "metadata": {
+      "version": "1.0.0",
+      "createdDate": "2025-01-25",
+      "lastModified": "2025-01-25",
+      "totalQuestions": 49,
+      "estimatedTime": "45-60 minutes",
+      "categories": 4,
+      "compliance": [
+        "HIPAA",
+        "HITECH",
+        "FDA",
+        "CMS"
+      ],
+      "brandColors": {
+        "primary": "#86ABCA",
+        "secondary": "#002D5D",
+        "accent": "#FFC629",
+        "success": "#005C5D"
+      },
+      "scoringSystem": {
+        "scale": "3-point",
+        "green": 3,
+        "yellowGreen": 2,
+        "yellow": 1
+      }
+    },
+    "steps": [
+      {
+        "stepId": "reimbursement",
+        "stepNumber": 1,
+        "title": "Reimbursement",
+        "description": "Evaluate payor-based reimbursement strategies, virtual care services, and FDA regulatory requirements",
+        "icon": "payment",
+        "color": "#4caf50",
+        "estimatedTime": "15-20 minutes",
+        "totalQuestions": 18,
+        "maxScore": 54,
+        "helpText": "This section evaluates your company's approach to healthcare reimbursement, including payor relationships, virtual care capabilities, and regulatory compliance.",
+        "reference": {
+          "title": "CMS Reimbursement Guidelines",
+          "url": "https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment",
+          "description": "Official CMS guidelines for healthcare reimbursement strategies"
+        },
+        "validation": {
+          "required": true,
+          "minimumAnswered": 15,
+          "completionMessage": "Reimbursement strategy assessment completed successfully"
+        },
+        "properties": {
+          "q1_payor_reimbursement": {
+            "questionNumber": 1,
+            "title": "Does the Company's business model rely on payor-based reimbursement? (If not, skip to Question 6.) If so, is there evidence of payors providing reimbursement for the type of services outlined in this Company's business model?",
+            "type": "string",
+            "category": "Reimbursement",
+            "subCategory": "Annual Physician Fee Updates and Reimbursement Codes",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Yes",
+              "Maybe",
+              "No"
+            ],
+            "scoring": {
+              "Yes": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Strong reimbursement foundation indicates high market viability and low financial risk"
+              },
+              "Maybe": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Uncertain reimbursement pathway requires strengthening but shows potential"
+              },
+              "No": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Alternative revenue model (direct-pay, employer-based) can be equally viable - reroutes to different investment lens"
+              }
+            },
+            "helpText": "Payor-based reimbursement is critical for sustainable healthcare technology adoption. Consider Medicare, Medicaid, and private insurance coverage.",
+            "explanation": "A 'No' answer doesn't indicate low viability—it redirects evaluation to alternative revenue models like direct-to-consumer, employer-based, or subscription models.",
+            "conditionalLogic": {
+              "if": {
+                "properties": {
+                  "q1_payor_reimbursement": {
+                    "const": "No"
+                  }
+                }
+              },
+              "then": {
+                "skipToQuestion": "q6_virtual_care"
+              }
+            }
+          },
+          "q2_reimbursement_strategy": {
+            "questionNumber": 2,
+            "title": "If the Company should have a reimbursement strategy, have they provided documentation to lay out their strategy?",
+            "type": "string",
+            "category": "Reimbursement",
+            "subCategory": "Annual Physician Fee Updates and Reimbursement Codes",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Yes",
+              "Maybe",
+              "No"
+            ],
+            "scoring": {
+              "Yes": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Documented strategy demonstrates high readiness and low risk"
+              },
+              "Maybe": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Partial documentation indicates moderate readiness, needs strengthening"
+              },
+              "No": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "Lack of documentation presents high risk and gaps in planning"
+              }
+            },
+            "helpText": "A documented reimbursement strategy demonstrates market understanding and business planning maturity.",
+            "explanation": "Comprehensive reimbursement documentation should include CPT codes, coverage policies, and payor engagement strategies.",
+            "showIf": {
+              "q1_payor_reimbursement": [
+                "Yes",
+                "Maybe"
+              ]
+            }
+          },
+          "q2_reimbursement_documentation": {
+            "questionNumber": "2a",
+            "title": "Please upload reimbursement strategy documentation",
+            "type": "file",
+            "category": "Reimbursement",
+            "subCategory": "Documentation Upload",
+            "inputType": "file",
+            "required": false,
+            "format": "binary",
+            "fileTypes": [
+              "pdf",
+              "doc",
+              "docx",
+              "ppt",
+              "pptx"
+            ],
+            "maxFileSize": "10MB",
+            "helpText": "Upload your reimbursement strategy document, business plan, or payor analysis.",
+            "explanation": "Documentation provides evidence of strategic planning and market analysis.",
+            "showIf": {
+              "q2_reimbursement_strategy": [
+                "Yes",
+                "Maybe"
+              ]
+            },
+            "scoring": {
+              "uploaded": {
+                "score": 1,
+                "level": "Bonus",
+                "rationale": "Documentation upload demonstrates transparency and preparation"
+              },
+              "not_uploaded": {
+                "score": 0,
+                "level": "Neutral",
+                "rationale": "No penalty for missing optional documentation"
+              }
+            }
+          },
+          "q3_reimbursement_red_flags": {
+            "questionNumber": 3,
+            "title": "If the Company does have a reimbursement strategy, are there any potential red flags in the reimbursement strategy that they present? (If there are potential issues, please provide a couple of lines in the notes section - Column K.)",
+            "type": "string",
+            "category": "Reimbursement",
+            "subCategory": "Annual Physician Fee Updates and Reimbursement Codes",
+            "inputType": "textarea",
+            "required": false,
+            "minLength": 10,
+            "maxLength": 1000,
+            "scoring": {
+              "no_red_flags": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "No identified red flags indicates high readiness and low risk"
+              },
+              "minor_concerns": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Minor concerns present moderate risk, needs strengthening"
+              },
+              "major_concerns": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "Major red flags present high risk and significant gaps"
+              }
+            },
+            "helpText": "Common red flags include unrealistic reimbursement assumptions, lack of payor engagement, or misunderstanding of coverage policies.",
+            "explanation": "Identifying potential issues early helps mitigate risks and improve strategy development.",
+            "showIf": {
+              "q2_reimbursement_strategy": [
+                "Yes"
+              ]
+            },
+            "placeholder": "Describe any concerns or red flags in the reimbursement strategy..."
+          },
+          "q4_cpt_codes": {
+            "questionNumber": 4,
+            "title": "Does the Company have a plan to obtain new CPT codes or use existing CPT codes?",
+            "type": "string",
+            "category": "Reimbursement",
+            "subCategory": "Annual Physician Fee Updates and Reimbursement Codes",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "New CPT codes",
+              "Existing CPT codes",
+              "Both",
+              "Uncertain"
+            ],
+            "scoring": {
+              "Existing CPT codes": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Existing CPT codes provide immediate reimbursement pathway with low risk"
+              },
+              "Both": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Hybrid approach demonstrates high readiness and strategic planning"
+              },
+              "New CPT codes": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "New CPT codes show innovation but need strengthening in timeline planning"
+              },
+              "Uncertain": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "Uncertainty indicates high risk and gaps in reimbursement planning"
+              }
+            },
+            "helpText": "CPT codes are essential for billing and reimbursement. New codes require AMA approval and can take 2-3 years.",
+            "explanation": "Current Procedural Terminology (CPT) codes are necessary for healthcare billing and reimbursement processes.",
+            "reference": {
+              "title": "AMA CPT Code Application Process",
+              "url": "https://www.ama-assn.org/practice-management/cpt/cpt-editorial-panel",
+              "description": "Official process for obtaining new CPT codes"
+            },
+            "showIf": {
+              "q1_payor_reimbursement": [
+                "Yes",
+                "Maybe"
+              ]
+            }
+          },
+          "q5_cpt_timeline": {
+            "questionNumber": 5,
+            "title": "What is the timeline for CPT code implementation?",
+            "type": "string",
+            "category": "Reimbursement",
+            "subCategory": "Annual Physician Fee Updates and Reimbursement Codes",
+            "inputType": "select",
+            "required": true,
+            "enum": [
+              "0-6 months",
+              "6-12 months",
+              "1-2 years",
+              "2-3 years",
+              "3+ years",
+              "Already implemented"
+            ],
+            "scoring": {
+              "Already implemented": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Implementation complete indicates high readiness and low risk"
+              },
+              "0-6 months": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Short timeline demonstrates high readiness"
+              },
+              "6-12 months": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Moderate timeline shows good planning but needs strengthening"
+              },
+              "1-2 years": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Longer timeline acceptable for new CPT codes but requires monitoring"
+              },
+              "2-3 years": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "Extended timeline presents high risk and market entry delays"
+              },
+              "3+ years": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "Very long timeline indicates high risk and significant gaps"
+              }
+            },
+            "helpText": "CPT code timelines vary significantly based on complexity and AMA review processes.",
+            "explanation": "Understanding implementation timelines is crucial for business planning and revenue projections.",
+            "showIf": {
+              "q4_cpt_codes": [
+                "New CPT codes",
+                "Both"
+              ]
+            }
+          },
+          "q6_virtual_care": {
+            "questionNumber": 6,
+            "title": "Does the Company provide virtual care services?",
+            "type": "string",
+            "category": "Reimbursement",
+            "subCategory": "Virtual Care and Telehealth",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Yes",
+              "No",
+              "Planning to"
+            ],
+            "scoring": {
+              "Yes": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Virtual care services demonstrate high market readiness and low risk"
+              },
+              "Planning to": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Planning shows awareness but needs strengthening in implementation"
+              },
+              "No": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Not providing virtual care may limit market opportunities but acceptable for some models"
+              }
+            },
+            "helpText": "Virtual care services have specific reimbursement considerations and regulatory requirements.",
+            "explanation": "Telehealth and virtual care services require compliance with state licensing, HIPAA, and reimbursement policies.",
+            "reference": {
+              "title": "CMS Telehealth Services",
+              "url": "https://www.cms.gov/Medicare/Medicare-General-Information/Telehealth",
+              "description": "Medicare telehealth coverage and payment policies"
+            }
+          },
+          "q7_telehealth_compliance": {
+            "questionNumber": 7,
+            "title": "Are virtual care services compliant with state licensing and telehealth regulations?",
+            "type": "string",
+            "category": "Reimbursement",
+            "subCategory": "Virtual Care and Telehealth",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Fully compliant",
+              "Partially compliant",
+              "Non-compliant",
+              "Under review"
+            ],
+            "scoring": {
+              "Fully compliant": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Full compliance indicates high readiness and low regulatory risk"
+              },
+              "Partially compliant": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Partial compliance shows progress but needs strengthening"
+              },
+              "Under review": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Review process shows awareness but creates moderate risk"
+              },
+              "Non-compliant": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "Non-compliance presents high risk and significant gaps"
+              }
+            },
+            "helpText": "State licensing requirements vary significantly for telehealth services across different states.",
+            "explanation": "Compliance with state-specific telehealth regulations is mandatory for legal operation.",
+            "showIf": {
+              "q6_virtual_care": [
+                "Yes",
+                "Planning to"
+              ]
+            }
+          },
+          "q8_fda_clearance": {
+            "questionNumber": 8,
+            "title": "Does the Company's technology require FDA clearance or approval?",
+            "type": "string",
+            "category": "Reimbursement",
+            "subCategory": "FDA Regulatory Requirements",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Yes - 510(k)",
+              "Yes - PMA",
+              "Yes - De Novo",
+              "No",
+              "Uncertain"
+            ],
+            "scoring": {
+              "No": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "No FDA requirement indicates high readiness and low regulatory risk"
+              },
+              "Yes - 510(k)": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "510(k) pathway is established but needs strengthening in execution"
+              },
+              "Yes - De Novo": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "De Novo pathway shows innovation but requires careful management"
+              },
+              "Yes - PMA": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "PMA pathway presents high risk and significant regulatory gaps"
+              },
+              "Uncertain": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "Regulatory uncertainty creates high risk and planning gaps"
+              }
+            },
+            "helpText": "FDA classification determines regulatory pathway and impacts reimbursement eligibility.",
+            "explanation": "Medical devices and software often require FDA clearance before market entry and reimbursement consideration.",
+            "reference": {
+              "title": "FDA Medical Device Classification",
+              "url": "https://www.fda.gov/medical-devices/classify-your-medical-device",
+              "description": "FDA guidance on medical device classification and regulatory pathways"
+            }
+          },
+          "q8_fda_documentation": {
+            "questionNumber": "8a",
+            "title": "Please upload FDA submission documentation or regulatory strategy",
+            "type": "file",
+            "category": "Reimbursement",
+            "subCategory": "FDA Documentation",
+            "inputType": "file",
+            "required": false,
+            "format": "binary",
+            "fileTypes": [
+              "pdf",
+              "doc",
+              "docx"
+            ],
+            "maxFileSize": "15MB",
+            "helpText": "Upload FDA submission materials, pre-submission feedback, or regulatory strategy documents.",
+            "explanation": "FDA documentation demonstrates regulatory planning and compliance preparation.",
+            "showIf": {
+              "q8_fda_clearance": [
+                "Yes - 510(k)",
+                "Yes - PMA",
+                "Yes - De Novo"
+              ]
+            },
+            "scoring": {
+              "uploaded": {
+                "score": 1,
+                "level": "Bonus",
+                "rationale": "FDA documentation demonstrates regulatory preparedness"
+              },
+              "not_uploaded": {
+                "score": 0,
+                "level": "Neutral",
+                "rationale": "No penalty for missing documentation"
+              }
+            }
+          },
+          "q9_fda_timeline": {
+            "questionNumber": 9,
+            "title": "What is the expected timeline for FDA clearance/approval?",
+            "type": "string",
+            "category": "Reimbursement",
+            "subCategory": "FDA Regulatory Requirements",
+            "inputType": "select",
+            "required": true,
+            "enum": [
+              "Already approved",
+              "0-6 months",
+              "6-12 months",
+              "1-2 years",
+              "2+ years"
+            ],
+            "scoring": {
+              "Already approved": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "FDA approval complete indicates high readiness and low risk"
+              },
+              "0-6 months": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Short timeline demonstrates high readiness"
+              },
+              "6-12 months": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Moderate timeline acceptable but needs strengthening in execution"
+              },
+              "1-2 years": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Longer timeline manageable with proper planning"
+              },
+              "2+ years": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "Extended timeline presents high risk and market entry delays"
+              }
+            },
+            "helpText": "FDA review timelines vary by device classification and submission quality.",
+            "explanation": "Accurate timeline estimation is crucial for business planning and investor expectations.",
+            "showIf": {
+              "q8_fda_clearance": [
+                "Yes - 510(k)",
+                "Yes - PMA",
+                "Yes - De Novo"
+              ]
+            }
+          },
+          "q10_clinical_evidence": {
+            "questionNumber": 10,
+            "title": "Does the Company have clinical evidence supporting efficacy and safety?",
+            "type": "string",
+            "category": "Reimbursement",
+            "subCategory": "Clinical Evidence and Outcomes",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Extensive clinical data",
+              "Limited clinical data",
+              "Preclinical data only",
+              "No clinical data"
+            ],
+            "scoring": {
+              "Extensive clinical data": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Extensive clinical evidence demonstrates high readiness and low risk"
+              },
+              "Limited clinical data": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Limited data provides foundation but needs strengthening"
+              },
+              "Preclinical data only": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "Preclinical only presents high risk and significant evidence gaps"
+              },
+              "No clinical data": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No clinical evidence presents high risk and major gaps"
+              }
+            },
+            "helpText": "Clinical evidence is essential for FDA approval and payor coverage decisions.",
+            "explanation": "Robust clinical evidence demonstrates safety, efficacy, and value proposition to stakeholders."
+          },
+          "q10_clinical_documentation": {
+            "questionNumber": "10a",
+            "title": "Please upload clinical study reports or evidence summaries",
+            "type": "file",
+            "category": "Reimbursement",
+            "subCategory": "Clinical Evidence Documentation",
+            "inputType": "file",
+            "required": false,
+            "format": "binary",
+            "fileTypes": [
+              "pdf",
+              "doc",
+              "docx"
+            ],
+            "maxFileSize": "20MB",
+            "helpText": "Upload clinical study reports, white papers, or evidence summaries.",
+            "explanation": "Clinical documentation provides evidence of safety and efficacy claims.",
+            "showIf": {
+              "q10_clinical_evidence": [
+                "Extensive clinical data",
+                "Limited clinical data",
+                "Preclinical data only"
+              ]
+            },
+            "scoring": {
+              "uploaded": {
+                "score": 1,
+                "level": "Bonus",
+                "rationale": "Clinical documentation supports evidence claims"
+              },
+              "not_uploaded": {
+                "score": 0,
+                "level": "Neutral",
+                "rationale": "No penalty for missing documentation"
+              }
+            }
+          },
+          "q11_health_economics": {
+            "questionNumber": 11,
+            "title": "Has the Company conducted health economics and outcomes research (HEOR)?",
+            "type": "string",
+            "category": "Reimbursement",
+            "subCategory": "Health Economics and Value",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Comprehensive HEOR",
+              "Basic cost analysis",
+              "Planned but not started",
+              "No HEOR conducted"
+            ],
+            "scoring": {
+              "Comprehensive HEOR": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Comprehensive HEOR demonstrates strong value proposition and low risk"
+              },
+              "Basic cost analysis": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Basic analysis provides foundation but needs strengthening"
+              },
+              "Planned but not started": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "Planning shows awareness but presents high risk without execution"
+              },
+              "No HEOR conducted": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No HEOR presents significant gaps in value demonstration"
+              }
+            },
+            "helpText": "HEOR studies demonstrate economic value and support reimbursement negotiations.",
+            "explanation": "Health economics research quantifies the value proposition and cost-effectiveness of healthcare technologies."
+          },
+          "q12_market_access": {
+            "questionNumber": 12,
+            "title": "Does the Company have a market access strategy?",
+            "type": "string",
+            "category": "Reimbursement",
+            "subCategory": "Market Access and Coverage",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Comprehensive strategy",
+              "Basic strategy",
+              "In development",
+              "No strategy"
+            ],
+            "scoring": {
+              "Comprehensive strategy": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Comprehensive strategy indicates high readiness and low market risk"
+              },
+              "Basic strategy": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Basic strategy provides foundation but needs strengthening"
+              },
+              "In development": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Development shows awareness but creates moderate risk"
+              },
+              "No strategy": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No strategy presents high risk and significant market access gaps"
+              }
+            },
+            "helpText": "Market access strategy outlines pathways to coverage and reimbursement.",
+            "explanation": "Effective market access strategies address payor needs, evidence requirements, and value communication."
+          },
+          "q13_payor_engagement": {
+            "questionNumber": 13,
+            "title": "Has the Company engaged with payors regarding coverage policies?",
+            "type": "string",
+            "category": "Reimbursement",
+            "subCategory": "Payor Relations",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Active engagement",
+              "Initial discussions",
+              "Planned engagement",
+              "No engagement"
+            ],
+            "scoring": {
+              "Active engagement": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Active engagement demonstrates high readiness and low coverage risk"
+              },
+              "Initial discussions": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Initial discussions show progress but need strengthening"
+              },
+              "Planned engagement": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Planning shows awareness but creates moderate risk"
+              },
+              "No engagement": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No engagement presents high risk and significant coverage gaps"
+              }
+            },
+            "helpText": "Early payor engagement helps understand coverage requirements and evidence needs.",
+            "explanation": "Proactive payor engagement improves likelihood of favorable coverage decisions."
+          },
+          "q14_coverage_gap": {
+            "questionNumber": 14,
+            "title": "Are there existing coverage gaps that the technology addresses?",
+            "type": "string",
+            "category": "Reimbursement",
+            "subCategory": "Coverage Analysis",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Significant gaps",
+              "Moderate gaps",
+              "Minor gaps",
+              "No gaps identified"
+            ],
+            "scoring": {
+              "Significant gaps": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Addressing significant gaps provides strong value proposition and low risk"
+              },
+              "Moderate gaps": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Moderate gaps provide value but need strengthening in positioning"
+              },
+              "Minor gaps": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Minor gaps provide some value but limited differentiation"
+              },
+              "No gaps identified": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No identified gaps presents high risk in value demonstration"
+              }
+            },
+            "helpText": "Addressing coverage gaps strengthens the value proposition for payors.",
+            "explanation": "Technologies that fill coverage gaps have stronger reimbursement potential."
+          },
+          "q15_competitive_analysis": {
+            "questionNumber": 15,
+            "title": "Has the Company analyzed competitor reimbursement strategies?",
+            "type": "string",
+            "category": "Reimbursement",
+            "subCategory": "Competitive Intelligence",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Comprehensive analysis",
+              "Basic analysis",
+              "In progress",
+              "No analysis"
+            ],
+            "scoring": {
+              "Comprehensive analysis": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Comprehensive analysis demonstrates high market understanding and low risk"
+              },
+              "Basic analysis": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Basic analysis provides foundation but needs strengthening"
+              },
+              "In progress": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Progress shows awareness but creates moderate risk"
+              },
+              "No analysis": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No analysis presents high risk and market knowledge gaps"
+              }
+            },
+            "helpText": "Understanding competitor strategies informs positioning and differentiation.",
+            "explanation": "Competitive analysis reveals market dynamics and successful reimbursement approaches."
+          },
+          "q16_pricing_strategy": {
+            "questionNumber": 16,
+            "title": "Does the Company have a pricing strategy aligned with reimbursement rates?",
+            "type": "string",
+            "category": "Reimbursement",
+            "subCategory": "Pricing and Economics",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Fully aligned",
+              "Partially aligned",
+              "Under development",
+              "Not aligned"
+            ],
+            "scoring": {
+              "Fully aligned": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Full alignment demonstrates high readiness and low pricing risk"
+              },
+              "Partially aligned": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Partial alignment shows progress but needs strengthening"
+              },
+              "Under development": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Development shows awareness but creates moderate risk"
+              },
+              "Not aligned": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "Misalignment presents high risk and adoption barriers"
+              }
+            },
+            "helpText": "Pricing must consider reimbursement rates to ensure provider adoption.",
+            "explanation": "Sustainable pricing strategies balance profitability with market accessibility."
+          },
+          "q17_risk_mitigation": {
+            "questionNumber": 17,
+            "title": "What risk mitigation strategies are in place for reimbursement challenges?",
+            "type": "string",
+            "category": "Reimbursement",
+            "subCategory": "Risk Management",
+            "inputType": "textarea",
+            "required": false,
+            "minLength": 10,
+            "maxLength": 500,
+            "scoring": {
+              "comprehensive_strategy": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Comprehensive risk mitigation demonstrates high preparedness and low risk"
+              },
+              "basic_strategy": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Basic strategy shows awareness but needs strengthening"
+              },
+              "limited_strategy": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "Limited strategy presents high risk and planning gaps"
+              }
+            },
+            "helpText": "Risk mitigation strategies should address regulatory, coverage, and competitive risks.",
+            "explanation": "Proactive risk management demonstrates business maturity and planning sophistication.",
+            "placeholder": "Describe risk mitigation strategies for reimbursement challenges..."
+          },
+          "q18_reimbursement_timeline": {
+            "questionNumber": 18,
+            "title": "What is the expected timeline to achieve sustainable reimbursement?",
+            "type": "string",
+            "category": "Reimbursement",
+            "subCategory": "Implementation Timeline",
+            "inputType": "select",
+            "required": true,
+            "enum": [
+              "0-6 months",
+              "6-12 months",
+              "1-2 years",
+              "2-3 years",
+              "3+ years"
+            ],
+            "scoring": {
+              "0-6 months": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Short timeline indicates high readiness and low implementation risk"
+              },
+              "6-12 months": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Reasonable timeline demonstrates good planning and low risk"
+              },
+              "1-2 years": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Moderate timeline acceptable but needs strengthening in execution"
+              },
+              "2-3 years": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Longer timeline manageable with proper milestones"
+              },
+              "3+ years": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "Extended timeline presents high risk and market entry delays"
+              }
+            },
+            "helpText": "Realistic timelines consider regulatory approval, evidence generation, and payor negotiations.",
+            "explanation": "Timeline expectations should align with regulatory pathways and market dynamics."
+          }
+        },
+        "required": [
+          "q1_payor_reimbursement",
+          "q2_reimbursement_strategy",
+          "q4_cpt_codes",
+          "q6_virtual_care",
+          "q7_telehealth_compliance",
+          "q8_fda_clearance",
+          "q9_fda_timeline",
+          "q10_clinical_evidence",
+          "q11_health_economics",
+          "q12_market_access",
+          "q13_payor_engagement",
+          "q14_coverage_gap",
+          "q15_competitive_analysis",
+          "q16_pricing_strategy",
+          "q18_reimbursement_timeline"
+        ]
+      },
+      {
+        "stepId": "privacy_data_access",
+        "stepNumber": 2,
+        "title": "Privacy & Data Access",
+        "description": "Assess HIPAA compliance, information blocking rules, and data privacy regulations",
+        "icon": "security",
+        "color": "#2196f3",
+        "estimatedTime": "15-20 minutes",
+        "totalQuestions": 19,
+        "maxScore": 57,
+        "helpText": "This section evaluates your organization's compliance with healthcare privacy regulations, data access requirements, and information blocking rules.",
+        "reference": {
+          "title": "HHS HIPAA Security Rule",
+          "url": "https://www.hhs.gov/hipaa/for-professionals/security/index.html",
+          "description": "Official HIPAA Security Rule guidance and requirements"
+        },
+        "validation": {
+          "required": true,
+          "minimumAnswered": 16,
+          "completionMessage": "Privacy and data access assessment completed successfully"
+        },
+        "properties": {
+          "q19_hipaa_entity": {
+            "questionNumber": 19,
+            "title": "If the Company is a CE or a BA and handling PHI (collecting, storing, exchanging, providing access), does the Company have a dedicated senior-level officer to handle data privacy and data security issues?",
+            "type": "string",
+            "category": "Privacy and Data Access",
+            "subCategory": "HIPAA and HITECH",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Yes",
+              "No",
+              "Not applicable"
+            ],
+            "scoring": {
+              "Yes": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Dedicated privacy officer ensures HIPAA compliance and accountability"
+              },
+              "No": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "Lack of dedicated officer creates compliance risk"
+              },
+              "Not applicable": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Not handling PHI reduces regulatory burden"
+              }
+            },
+            "helpText": "HIPAA requires covered entities and business associates to have appropriate administrative safeguards including designated security officials.",
+            "explanation": "A dedicated privacy/security officer ensures compliance oversight and accountability for PHI protection."
+          },
+          "q19_privacy_officer_credentials": {
+            "questionNumber": "19a",
+            "title": "Please upload privacy officer credentials or organizational chart",
+            "type": "file",
+            "category": "Privacy and Data Access",
+            "subCategory": "Privacy Officer Documentation",
+            "inputType": "file",
+            "required": false,
+            "format": "binary",
+            "fileTypes": [
+              "pdf",
+              "doc",
+              "docx",
+              "jpg",
+              "png"
+            ],
+            "maxFileSize": "5MB",
+            "helpText": "Upload privacy officer resume, certifications, or organizational structure.",
+            "explanation": "Documentation demonstrates qualified privacy leadership.",
+            "showIf": {
+              "q19_hipaa_entity": [
+                "Yes"
+              ]
+            },
+            "scoring": {
+              "uploaded": {
+                "score": 1,
+                "level": "Bonus",
+                "rationale": "Privacy officer credentials demonstrate qualified leadership"
+              },
+              "not_uploaded": {
+                "score": 0,
+                "level": "Neutral",
+                "rationale": "No penalty for missing documentation"
+              }
+            }
+          },
+          "q20_data_governance": {
+            "questionNumber": 20,
+            "title": "Does the Company have a comprehensive data governance framework?",
+            "type": "string",
+            "category": "Privacy and Data Access",
+            "subCategory": "Data Governance",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Comprehensive framework",
+              "Basic framework",
+              "In development",
+              "No framework"
+            ],
+            "scoring": {
+              "Comprehensive framework": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Comprehensive framework ensures high data management readiness and low risk"
+              },
+              "Basic framework": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Basic framework provides foundation but needs strengthening"
+              },
+              "In development": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Development shows awareness but creates moderate risk"
+              },
+              "No framework": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No framework presents high risk and governance gaps"
+              }
+            },
+            "helpText": "Data governance frameworks establish policies, procedures, and controls for data management throughout its lifecycle.",
+            "explanation": "Effective data governance ensures data quality, security, privacy, and regulatory compliance."
+          },
+          "q21_encryption": {
+            "questionNumber": 21,
+            "title": "Is PHI encrypted both at rest and in transit?",
+            "type": "string",
+            "category": "Privacy and Data Access",
+            "subCategory": "Technical Safeguards",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Both at rest and in transit",
+              "At rest only",
+              "In transit only",
+              "No encryption"
+            ],
+            "scoring": {
+              "Both at rest and in transit": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Complete encryption provides maximum PHI protection and low risk"
+              },
+              "At rest only": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Partial encryption leaves data vulnerable during transmission"
+              },
+              "In transit only": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Partial encryption leaves stored data vulnerable"
+              },
+              "No encryption": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No encryption creates significant security risk"
+              }
+            },
+            "helpText": "HIPAA requires encryption of PHI to prevent unauthorized access during storage and transmission.",
+            "explanation": "Encryption is a critical technical safeguard that protects PHI from unauthorized disclosure."
+          },
+          "q21_encryption_certificate": {
+            "questionNumber": "21a",
+            "title": "Please upload encryption implementation documentation or security certificates",
+            "type": "file",
+            "category": "Privacy and Data Access",
+            "subCategory": "Encryption Documentation",
+            "inputType": "file",
+            "required": false,
+            "format": "binary",
+            "fileTypes": [
+              "pdf",
+              "doc",
+              "docx",
+              "pem",
+              "crt"
+            ],
+            "maxFileSize": "5MB",
+            "helpText": "Upload encryption specifications, SSL certificates, or security audit reports.",
+            "explanation": "Documentation validates encryption implementation claims.",
+            "showIf": {
+              "q21_encryption": [
+                "Both at rest and in transit",
+                "At rest only",
+                "In transit only"
+              ]
+            },
+            "scoring": {
+              "uploaded": {
+                "score": 1,
+                "level": "Bonus",
+                "rationale": "Encryption documentation validates security implementation"
+              },
+              "not_uploaded": {
+                "score": 0,
+                "level": "Neutral",
+                "rationale": "No penalty for missing documentation"
+              }
+            }
+          },
+          "q22_access_controls": {
+            "questionNumber": 22,
+            "title": "Are there role-based access controls for PHI?",
+            "type": "string",
+            "category": "Privacy and Data Access",
+            "subCategory": "Access Management",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Comprehensive RBAC",
+              "Basic access controls",
+              "Limited controls",
+              "No access controls"
+            ],
+            "scoring": {
+              "Comprehensive RBAC": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Comprehensive RBAC ensures proper access control and low risk"
+              },
+              "Basic access controls": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Basic controls provide foundation but need strengthening"
+              },
+              "Limited controls": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Limited controls create moderate risk"
+              },
+              "No access controls": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No controls create significant security risk"
+              }
+            },
+            "helpText": "Role-based access controls ensure that only authorized individuals can access PHI based on their job functions.",
+            "explanation": "RBAC implements the principle of least privilege, limiting access to the minimum necessary for job functions."
+          },
+          "q23_audit_logs": {
+            "questionNumber": 23,
+            "title": "Does the system maintain comprehensive audit logs for PHI access?",
+            "type": "string",
+            "category": "Privacy and Data Access",
+            "subCategory": "Audit and Monitoring",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Comprehensive logging",
+              "Basic logging",
+              "Limited logging",
+              "No logging"
+            ],
+            "scoring": {
+              "Comprehensive logging": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Comprehensive logging ensures full audit trail and low risk"
+              },
+              "Basic logging": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Basic logging provides foundation but needs strengthening"
+              },
+              "Limited logging": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Limited logging creates moderate compliance risk"
+              },
+              "No logging": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No logging creates significant compliance risk"
+              }
+            },
+            "helpText": "Audit logs track all PHI access and modifications to detect unauthorized use and support compliance monitoring.",
+            "explanation": "HIPAA requires audit controls to record access and other activity in information systems containing PHI."
+          },
+          "q24_breach_response": {
+            "questionNumber": 24,
+            "title": "Is there a documented breach response plan?",
+            "type": "string",
+            "category": "Privacy and Data Access",
+            "subCategory": "Incident Response",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Comprehensive plan",
+              "Basic plan",
+              "In development",
+              "No plan"
+            ],
+            "scoring": {
+              "Comprehensive plan": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Comprehensive breach response plan ensures rapid incident management"
+              },
+              "Basic plan": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Basic plan provides foundation but may need enhancement"
+              },
+              "In development": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Plan development shows awareness but lacks implementation"
+              },
+              "No plan": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No breach response plan creates significant compliance risk"
+              }
+            },
+            "helpText": "HIPAA requires covered entities to have procedures for responding to security incidents and breaches.",
+            "explanation": "Breach response plans ensure rapid detection, containment, and notification of security incidents."
+          },
+          "q24_breach_response_plan": {
+            "questionNumber": "24a",
+            "title": "Please upload breach response plan documentation",
+            "type": "file",
+            "category": "Privacy and Data Access",
+            "subCategory": "Breach Response Documentation",
+            "inputType": "file",
+            "required": false,
+            "format": "binary",
+            "fileTypes": [
+              "pdf",
+              "doc",
+              "docx"
+            ],
+            "maxFileSize": "10MB",
+            "helpText": "Upload breach response procedures, incident response plan, or security policies.",
+            "explanation": "Documentation demonstrates preparedness for security incidents.",
+            "showIf": {
+              "q24_breach_response": [
+                "Comprehensive plan",
+                "Basic plan"
+              ]
+            },
+            "scoring": {
+              "uploaded": {
+                "score": 1,
+                "level": "Bonus",
+                "rationale": "Breach response documentation demonstrates incident preparedness"
+              },
+              "not_uploaded": {
+                "score": 0,
+                "level": "Neutral",
+                "rationale": "No penalty for missing documentation"
+              }
+            }
+          },
+          "q25_employee_training": {
+            "questionNumber": 25,
+            "title": "Do all employees receive regular HIPAA and privacy training?",
+            "type": "string",
+            "category": "Privacy and Data Access",
+            "subCategory": "Workforce Training",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Regular comprehensive training",
+              "Basic training",
+              "Irregular training",
+              "No training"
+            ],
+            "scoring": {
+              "Regular comprehensive training": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Regular training ensures workforce compliance and low risk"
+              },
+              "Basic training": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Basic training provides foundation but needs strengthening"
+              },
+              "Irregular training": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Irregular training creates moderate compliance risk"
+              },
+              "No training": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No training creates significant compliance risk"
+              }
+            },
+            "helpText": "HIPAA requires workforce training on privacy and security policies and procedures.",
+            "explanation": "Regular training ensures employees understand their responsibilities for protecting PHI."
+          },
+          "q26_information_blocking": {
+            "questionNumber": 26,
+            "title": "Is the Company compliant with information blocking regulations?",
+            "type": "string",
+            "category": "Privacy and Data Access",
+            "subCategory": "Information Blocking",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Fully compliant",
+              "Mostly compliant",
+              "Partially compliant",
+              "Non-compliant"
+            ],
+            "scoring": {
+              "Fully compliant": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Full compliance ensures patient access rights and low regulatory risk"
+              },
+              "Mostly compliant": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Mostly compliant shows progress but needs strengthening"
+              },
+              "Partially compliant": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Partial compliance creates moderate regulatory risk"
+              },
+              "Non-compliant": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "Non-compliance creates significant regulatory risk"
+              }
+            },
+            "helpText": "Information blocking regulations require healthcare providers and technology developers to support patient access to health information.",
+            "explanation": "The 21st Century Cures Act prohibits information blocking practices that interfere with patient access to health information.",
+            "reference": {
+              "title": "ONC Information Blocking Rule",
+              "url": "https://www.healthit.gov/topic/information-blocking",
+              "description": "Official guidance on information blocking regulations"
+            }
+          },
+          "q27_patient_access": {
+            "questionNumber": 27,
+            "title": "Does the system provide patients with easy access to their health information?",
+            "type": "string",
+            "category": "Privacy and Data Access",
+            "subCategory": "Patient Rights",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Full patient portal access",
+              "Limited access",
+              "Request-based access",
+              "No patient access"
+            ],
+            "scoring": {
+              "Full patient portal access": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Full patient access ensures compliance and patient empowerment"
+              },
+              "Limited access": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Limited access provides foundation but needs strengthening"
+              },
+              "Request-based access": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Request-based access meets minimum requirements but creates barriers"
+              },
+              "No patient access": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No patient access creates significant compliance risk"
+              }
+            },
+            "helpText": "Patients have the right to access their PHI under HIPAA and information blocking regulations.",
+            "explanation": "Patient access to health information improves care coordination and patient engagement."
+          },
+          "q28_data_portability": {
+            "questionNumber": 28,
+            "title": "Does the system support data portability and export capabilities?",
+            "type": "string",
+            "category": "Privacy and Data Access",
+            "subCategory": "Data Portability",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Full portability",
+              "Limited portability",
+              "Export only",
+              "No portability"
+            ],
+            "scoring": {
+              "Full portability": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Full portability ensures patient rights and reduces information blocking risk"
+              },
+              "Limited portability": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Limited portability provides foundation but needs strengthening"
+              },
+              "Export only": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Export capability meets basic requirements but limits functionality"
+              },
+              "No portability": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No portability creates information blocking risk"
+              }
+            },
+            "helpText": "Data portability enables patients and providers to move health information between systems.",
+            "explanation": "Interoperability and data portability reduce information blocking and improve care coordination."
+          },
+          "q29_consent_management": {
+            "questionNumber": 29,
+            "title": "Is there a robust consent management system for data sharing?",
+            "type": "string",
+            "category": "Privacy and Data Access",
+            "subCategory": "Consent Management",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Comprehensive consent management",
+              "Basic consent tracking",
+              "Manual consent process",
+              "No consent management"
+            ],
+            "scoring": {
+              "Comprehensive consent management": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Comprehensive consent management ensures patient autonomy and low risk"
+              },
+              "Basic consent tracking": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Basic tracking provides foundation but needs strengthening"
+              },
+              "Manual consent process": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Manual process meets requirements but creates operational risk"
+              },
+              "No consent management": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No consent management creates significant compliance risk"
+              }
+            },
+            "helpText": "Consent management systems track patient preferences for data sharing and use.",
+            "explanation": "Proper consent management ensures patient autonomy and regulatory compliance."
+          },
+          "q30_third_party_sharing": {
+            "questionNumber": 30,
+            "title": "Are there controls for third-party data sharing agreements?",
+            "type": "string",
+            "category": "Privacy and Data Access",
+            "subCategory": "Third-Party Management",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Comprehensive controls",
+              "Basic agreements",
+              "Limited oversight",
+              "No controls"
+            ],
+            "scoring": {
+              "Comprehensive controls": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Comprehensive controls ensure proper third-party management and low risk"
+              },
+              "Basic agreements": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Basic agreements provide foundation but need strengthening"
+              },
+              "Limited oversight": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Limited oversight creates moderate compliance risk"
+              },
+              "No controls": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No controls create significant compliance risk"
+              }
+            },
+            "helpText": "Business associate agreements and data sharing controls are required for third-party PHI access.",
+            "explanation": "Third-party data sharing requires appropriate safeguards and contractual protections."
+          },
+          "q31_privacy_impact": {
+            "questionNumber": 31,
+            "title": "Has the Company conducted privacy impact assessments?",
+            "type": "string",
+            "category": "Privacy and Data Access",
+            "subCategory": "Privacy Assessment",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Comprehensive PIAs",
+              "Basic assessments",
+              "Planned assessments",
+              "No assessments"
+            ],
+            "scoring": {
+              "Comprehensive PIAs": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Comprehensive PIAs demonstrate proactive privacy management and low risk"
+              },
+              "Basic assessments": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Basic assessments provide foundation but need strengthening"
+              },
+              "Planned assessments": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Planning shows awareness but creates moderate risk"
+              },
+              "No assessments": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No assessments create significant privacy risk"
+              }
+            },
+            "helpText": "Privacy impact assessments identify and mitigate privacy risks in systems and processes.",
+            "explanation": "PIAs help organizations proactively address privacy concerns and regulatory requirements."
+          },
+          "q32_data_minimization": {
+            "questionNumber": 32,
+            "title": "Does the Company implement data minimization principles?",
+            "type": "string",
+            "category": "Privacy and Data Access",
+            "subCategory": "Data Minimization",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Strict minimization",
+              "General minimization",
+              "Limited minimization",
+              "No minimization"
+            ],
+            "scoring": {
+              "Strict minimization": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Strict minimization ensures compliance and reduces privacy risk"
+              },
+              "General minimization": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "General minimization provides foundation but needs strengthening"
+              },
+              "Limited minimization": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Limited minimization creates moderate privacy risk"
+              },
+              "No minimization": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No minimization creates significant privacy risk"
+              }
+            },
+            "helpText": "Data minimization limits collection and use of PHI to the minimum necessary for intended purposes.",
+            "explanation": "The minimum necessary standard is a core HIPAA requirement for PHI use and disclosure."
+          },
+          "q33_retention_policies": {
+            "questionNumber": 33,
+            "title": "Are there documented data retention and disposal policies?",
+            "type": "string",
+            "category": "Privacy and Data Access",
+            "subCategory": "Data Lifecycle",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Comprehensive policies",
+              "Basic policies",
+              "In development",
+              "No policies"
+            ],
+            "scoring": {
+              "Comprehensive policies": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Comprehensive policies ensure proper data lifecycle management and low risk"
+              },
+              "Basic policies": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Basic policies provide foundation but need strengthening"
+              },
+              "In development": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Development shows awareness but creates moderate risk"
+              },
+              "No policies": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No policies create significant compliance risk"
+              }
+            },
+            "helpText": "Data retention policies specify how long PHI is kept and how it is securely disposed of when no longer needed.",
+            "explanation": "Proper data lifecycle management reduces privacy risks and ensures regulatory compliance."
+          },
+          "q34_international_compliance": {
+            "questionNumber": 34,
+            "title": "If operating internationally, is the Company compliant with applicable privacy laws (GDPR, etc.)?",
+            "type": "string",
+            "category": "Privacy and Data Access",
+            "subCategory": "International Compliance",
+            "inputType": "radio",
+            "required": false,
+            "enum": [
+              "Fully compliant",
+              "Mostly compliant",
+              "Partially compliant",
+              "Not applicable"
+            ],
+            "scoring": {
+              "Fully compliant": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Full international compliance demonstrates global readiness and low risk"
+              },
+              "Mostly compliant": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Mostly compliant shows progress but needs strengthening"
+              },
+              "Partially compliant": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Partial compliance creates moderate regulatory risk"
+              },
+              "Not applicable": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Not operating internationally reduces regulatory complexity"
+              }
+            },
+            "helpText": "International operations may require compliance with additional privacy regulations like GDPR.",
+            "explanation": "Global privacy regulations have varying requirements for data protection and patient rights."
+          },
+          "q35_vendor_management": {
+            "questionNumber": 35,
+            "title": "Is there a vendor risk management program for privacy and security?",
+            "type": "string",
+            "category": "Privacy and Data Access",
+            "subCategory": "Vendor Management",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Comprehensive program",
+              "Basic assessments",
+              "Limited oversight",
+              "No program"
+            ],
+            "scoring": {
+              "Comprehensive program": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Comprehensive vendor management ensures third-party compliance and low risk"
+              },
+              "Basic assessments": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Basic assessments provide foundation but need strengthening"
+              },
+              "Limited oversight": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Limited oversight creates moderate vendor risk"
+              },
+              "No program": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No program creates significant vendor risk"
+              }
+            },
+            "helpText": "Vendor risk management ensures third-party service providers meet privacy and security requirements.",
+            "explanation": "Business associates must provide appropriate safeguards for PHI under HIPAA requirements."
+          },
+          "q36_privacy_by_design": {
+            "questionNumber": 36,
+            "title": "Does the Company implement privacy by design principles?",
+            "type": "string",
+            "category": "Privacy and Data Access",
+            "subCategory": "Privacy Engineering",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Comprehensive implementation",
+              "Basic implementation",
+              "Planned implementation",
+              "No implementation"
+            ],
+            "scoring": {
+              "Comprehensive implementation": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Comprehensive privacy by design ensures proactive protection and low risk"
+              },
+              "Basic implementation": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Basic implementation provides foundation but needs strengthening"
+              },
+              "Planned implementation": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Planning shows awareness but creates moderate risk"
+              },
+              "No implementation": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No implementation creates significant privacy risk"
+              }
+            },
+            "helpText": "Privacy by design integrates privacy considerations into system design and development processes.",
+            "explanation": "Proactive privacy protection is more effective and cost-efficient than reactive compliance."
+          },
+          "q37_privacy_complaints": {
+            "questionNumber": 37,
+            "title": "Is there a process for handling privacy complaints and requests?",
+            "type": "string",
+            "category": "Privacy and Data Access",
+            "subCategory": "Complaint Management",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Formal process",
+              "Informal process",
+              "Ad-hoc handling",
+              "No process"
+            ],
+            "scoring": {
+              "Formal process": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Formal process ensures proper complaint handling and low compliance risk"
+              },
+              "Informal process": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Informal process provides foundation but needs strengthening"
+              },
+              "Ad-hoc handling": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Ad-hoc handling creates moderate compliance risk"
+              },
+              "No process": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No process creates significant compliance risk"
+              }
+            },
+            "helpText": "HIPAA requires covered entities to have procedures for individuals to file complaints about privacy practices.",
+            "explanation": "Effective complaint handling demonstrates commitment to privacy protection and regulatory compliance."
+          }
+        },
+        "required": [
+          "q19_hipaa_entity",
+          "q20_data_governance",
+          "q21_encryption",
+          "q22_access_controls",
+          "q23_audit_logs",
+          "q24_breach_response",
+          "q25_employee_training",
+          "q26_information_blocking",
+          "q27_patient_access",
+          "q28_data_portability",
+          "q29_consent_management",
+          "q30_third_party_sharing",
+          "q31_privacy_impact",
+          "q32_data_minimization",
+          "q33_retention_policies",
+          "q35_vendor_management",
+          "q36_privacy_by_design",
+          "q37_privacy_complaints"
+        ]
+      },
+      {
+        "stepId": "data_interoperability",
+        "stepNumber": 3,
+        "title": "Data Interoperability",
+        "description": "Review FHIR standards, API requirements, and interoperability policies",
+        "icon": "share",
+        "color": "#ff9800",
+        "estimatedTime": "10-15 minutes",
+        "totalQuestions": 9,
+        "maxScore": 27,
+        "helpText": "This section evaluates your system's ability to exchange and use health information across different healthcare organizations and technology platforms.",
+        "reference": {
+          "title": "HL7 FHIR Standards",
+          "url": "https://www.hl7.org/fhir/",
+          "description": "Official HL7 FHIR specification and implementation guides"
+        },
+        "validation": {
+          "required": true,
+          "minimumAnswered": 8,
+          "completionMessage": "Data interoperability assessment completed successfully"
+        },
+        "properties": {
+          "q38_fhir_compliance": {
+            "questionNumber": 38,
+            "title": "If the Company uses and shares patient data with CAH or eligible hospital clients through an EHR, is the EHR a Certified EHR Technology (CEHRT)?",
+            "type": "string",
+            "category": "Data Interoperability",
+            "subCategory": "CMS Promoting Interoperability Programs",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Yes",
+              "No",
+              "Not applicable"
+            ],
+            "scoring": {
+              "Yes": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "CEHRT certification ensures interoperability and CMS program eligibility"
+              },
+              "No": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "Non-certified EHR limits CMS program participation and interoperability"
+              },
+              "Not applicable": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Not using EHR reduces certification requirements"
+              }
+            },
+            "helpText": "CEHRT certification ensures EHR systems meet interoperability and security requirements for CMS programs.",
+            "explanation": "Certified EHR Technology is required for participation in CMS quality programs and meaningful use incentives.",
+            "reference": {
+              "title": "ONC Health IT Certification Program",
+              "url": "https://www.healthit.gov/topic/certification-ehrs/certification-health-it",
+              "description": "Official certification requirements for health IT systems"
+            }
+          },
+          "q38_cehrt_certificate": {
+            "questionNumber": "38a",
+            "title": "Please upload CEHRT certification documentation",
+            "type": "file",
+            "category": "Data Interoperability",
+            "subCategory": "CEHRT Documentation",
+            "inputType": "file",
+            "required": false,
+            "format": "binary",
+            "fileTypes": [
+              "pdf",
+              "doc",
+              "docx",
+              "jpg",
+              "png"
+            ],
+            "maxFileSize": "5MB",
+            "helpText": "Upload CEHRT certification letter or ONC-ACB documentation.",
+            "explanation": "Certification documentation validates EHR compliance claims.",
+            "showIf": {
+              "q38_fhir_compliance": [
+                "Yes"
+              ]
+            },
+            "scoring": {
+              "uploaded": {
+                "score": 1,
+                "level": "Bonus",
+                "rationale": "CEHRT documentation validates certification claims"
+              },
+              "not_uploaded": {
+                "score": 0,
+                "level": "Neutral",
+                "rationale": "No penalty for missing documentation"
+              }
+            }
+          },
+          "q39_fhir_implementation": {
+            "questionNumber": 39,
+            "title": "Does the system implement HL7 FHIR standards for data exchange?",
+            "type": "string",
+            "category": "Data Interoperability",
+            "subCategory": "FHIR Standards",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "FHIR R4",
+              "FHIR STU3",
+              "Earlier FHIR version",
+              "No FHIR implementation"
+            ],
+            "scoring": {
+              "FHIR R4": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "FHIR R4 is the current standard for modern interoperability and low risk"
+              },
+              "FHIR STU3": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "FHIR STU3 provides good interoperability but should upgrade to R4"
+              },
+              "Earlier FHIR version": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Earlier FHIR versions have limited interoperability capabilities"
+              },
+              "No FHIR implementation": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No FHIR implementation limits modern interoperability significantly"
+              }
+            },
+            "helpText": "FHIR (Fast Healthcare Interoperability Resources) is the modern standard for healthcare data exchange.",
+            "explanation": "FHIR R4 is the current standard required for 21st Century Cures Act compliance and modern interoperability."
+          },
+          "q39_fhir_documentation": {
+            "questionNumber": "39a",
+            "title": "Please upload FHIR implementation guide or API documentation",
+            "type": "file",
+            "category": "Data Interoperability",
+            "subCategory": "FHIR Implementation Documentation",
+            "inputType": "file",
+            "required": false,
+            "format": "binary",
+            "fileTypes": [
+              "pdf",
+              "doc",
+              "docx",
+              "json",
+              "xml"
+            ],
+            "maxFileSize": "10MB",
+            "helpText": "Upload FHIR implementation guide, API documentation, or capability statements.",
+            "explanation": "FHIR documentation demonstrates technical implementation details.",
+            "showIf": {
+              "q39_fhir_implementation": [
+                "FHIR R4",
+                "FHIR STU3",
+                "Earlier FHIR version"
+              ]
+            },
+            "scoring": {
+              "uploaded": {
+                "score": 1,
+                "level": "Bonus",
+                "rationale": "FHIR documentation validates implementation claims"
+              },
+              "not_uploaded": {
+                "score": 0,
+                "level": "Neutral",
+                "rationale": "No penalty for missing documentation"
+              }
+            }
+          },
+          "q40_api_capabilities": {
+            "questionNumber": 40,
+            "title": "Does the system provide standardized APIs for data access?",
+            "type": "string",
+            "category": "Data Interoperability",
+            "subCategory": "API Implementation",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "FHIR APIs",
+              "RESTful APIs",
+              "Legacy APIs",
+              "No APIs"
+            ],
+            "scoring": {
+              "FHIR APIs": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "FHIR APIs provide modern standardized access and low interoperability risk"
+              },
+              "RESTful APIs": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "RESTful APIs provide good access but need FHIR standardization"
+              },
+              "Legacy APIs": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Legacy APIs provide limited interoperability capabilities"
+              },
+              "No APIs": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No APIs create significant interoperability barriers"
+              }
+            },
+            "helpText": "Standardized APIs enable secure, authorized access to patient data by third-party applications.",
+            "explanation": "The 21st Century Cures Act requires certified health IT to support standardized APIs for patient access."
+          },
+          "q41_data_standards": {
+            "questionNumber": 41,
+            "title": "Which clinical data standards does the system support?",
+            "type": "array",
+            "category": "Data Interoperability",
+            "subCategory": "Clinical Standards",
+            "inputType": "checkbox",
+            "required": true,
+            "items": {
+              "type": "string",
+              "enum": [
+                "SNOMED CT",
+                "LOINC",
+                "RxNorm",
+                "ICD-10",
+                "CPT",
+                "CVX",
+                "None"
+              ]
+            },
+            "scoring": {
+              "SNOMED CT": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "SNOMED CT provides comprehensive clinical terminology support"
+              },
+              "LOINC": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "LOINC provides essential laboratory and clinical observation standards"
+              },
+              "RxNorm": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "RxNorm provides standardized medication terminology"
+              },
+              "ICD-10": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "ICD-10 provides basic diagnosis coding support"
+              },
+              "CPT": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "CPT provides procedure coding support"
+              },
+              "CVX": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "CVX provides vaccine coding support"
+              },
+              "None": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No clinical standards support creates significant interoperability gaps"
+              }
+            },
+            "helpText": "Clinical data standards ensure consistent representation and exchange of health information.",
+            "explanation": "Standardized clinical terminologies enable semantic interoperability across healthcare systems.",
+            "minItems": 1
+          },
+          "q42_care_coordination": {
+            "questionNumber": 42,
+            "title": "Does the system support care coordination workflows?",
+            "type": "string",
+            "category": "Data Interoperability",
+            "subCategory": "Care Coordination",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Comprehensive workflows",
+              "Basic workflows",
+              "Limited support",
+              "No support"
+            ],
+            "scoring": {
+              "Comprehensive workflows": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Comprehensive workflows enable effective care coordination and low risk"
+              },
+              "Basic workflows": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Basic workflows provide foundation but need strengthening"
+              },
+              "Limited support": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Limited support creates moderate care coordination barriers"
+              },
+              "No support": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No support creates significant care coordination gaps"
+              }
+            },
+            "helpText": "Care coordination workflows facilitate communication and information sharing among healthcare providers.",
+            "explanation": "Effective care coordination improves patient outcomes and reduces healthcare costs."
+          },
+          "q43_patient_matching": {
+            "questionNumber": 43,
+            "title": "Does the system implement patient matching capabilities?",
+            "type": "string",
+            "category": "Data Interoperability",
+            "subCategory": "Patient Matching",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Advanced matching algorithms",
+              "Basic matching",
+              "Manual matching",
+              "No matching"
+            ],
+            "scoring": {
+              "Advanced matching algorithms": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Advanced algorithms ensure accurate patient identification and low safety risk"
+              },
+              "Basic matching": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Basic matching provides foundation but needs strengthening"
+              },
+              "Manual matching": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Manual matching creates moderate efficiency and accuracy risks"
+              },
+              "No matching": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No matching creates significant patient safety risks"
+              }
+            },
+            "helpText": "Patient matching ensures health information is correctly associated with the right patient across systems.",
+            "explanation": "Accurate patient matching is critical for patient safety and care continuity."
+          },
+          "q44_quality_reporting": {
+            "questionNumber": 44,
+            "title": "Does the system support automated quality measure reporting?",
+            "type": "string",
+            "category": "Data Interoperability",
+            "subCategory": "Quality Reporting",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Automated reporting",
+              "Semi-automated",
+              "Manual reporting",
+              "No reporting"
+            ],
+            "scoring": {
+              "Automated reporting": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Automated reporting reduces provider burden and improves accuracy"
+              },
+              "Semi-automated": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Semi-automated provides foundation but needs full automation"
+              },
+              "Manual reporting": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Manual reporting creates efficiency and accuracy challenges"
+              },
+              "No reporting": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No reporting creates significant CMS program participation barriers"
+              }
+            },
+            "helpText": "Automated quality reporting reduces provider burden and improves data accuracy for CMS programs.",
+            "explanation": "Quality measure reporting is required for various CMS quality programs and value-based care initiatives."
+          },
+          "q45_health_information_exchange": {
+            "questionNumber": 45,
+            "title": "Does the system participate in Health Information Exchanges (HIEs)?",
+            "type": "string",
+            "category": "Data Interoperability",
+            "subCategory": "Health Information Exchange",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Active HIE participation",
+              "Limited participation",
+              "Planned participation",
+              "No participation"
+            ],
+            "scoring": {
+              "Active HIE participation": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Active HIE participation enables comprehensive care coordination"
+              },
+              "Limited participation": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Limited participation provides foundation but needs expansion"
+              },
+              "Planned participation": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Planning shows awareness but creates moderate interoperability gaps"
+              },
+              "No participation": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No participation creates significant care coordination barriers"
+              }
+            },
+            "helpText": "HIE participation enables sharing of patient information across different healthcare organizations.",
+            "explanation": "HIEs improve care coordination and reduce duplicate testing and procedures."
+          },
+          "q46_interoperability_testing": {
+            "questionNumber": 46,
+            "title": "Has the system undergone interoperability testing and validation?",
+            "type": "string",
+            "category": "Data Interoperability",
+            "subCategory": "Testing and Validation",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Comprehensive testing",
+              "Basic testing",
+              "Planned testing",
+              "No testing"
+            ],
+            "scoring": {
+              "Comprehensive testing": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Comprehensive testing ensures reliable interoperability and low implementation risk"
+              },
+              "Basic testing": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Basic testing provides foundation but needs comprehensive validation"
+              },
+              "Planned testing": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Planning shows awareness but creates moderate implementation risk"
+              },
+              "No testing": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "No testing creates significant interoperability implementation risk"
+              }
+            },
+            "helpText": "Interoperability testing validates that systems can successfully exchange and use health information.",
+            "explanation": "Testing ensures that interoperability implementations work correctly in real-world scenarios."
+          }
+        },
+        "required": [
+          "q38_fhir_compliance",
+          "q39_fhir_implementation",
+          "q40_api_capabilities",
+          "q41_data_standards",
+          "q42_care_coordination",
+          "q43_patient_matching",
+          "q44_quality_reporting",
+          "q45_health_information_exchange",
+          "q46_interoperability_testing"
+        ]
+      },
+      {
+        "stepId": "data_standards",
+        "stepNumber": 4,
+        "title": "Data Standards",
+        "description": "Evaluate compliance with technological standards and regulatory requirements",
+        "icon": "verified",
+        "color": "#9c27b0",
+        "estimatedTime": "5-10 minutes",
+        "totalQuestions": 3,
+        "maxScore": 9,
+        "helpText": "This section evaluates your organization's compliance with healthcare data standards, technological requirements, and emerging regulatory frameworks.",
+        "reference": {
+          "title": "ONC Standards and Certification",
+          "url": "https://www.healthit.gov/topic/standards-technology",
+          "description": "Official healthcare IT standards and certification requirements"
+        },
+        "validation": {
+          "required": true,
+          "minimumAnswered": 3,
+          "completionMessage": "Data standards assessment completed successfully"
+        },
+        "properties": {
+          "q47_technology_standards": {
+            "questionNumber": 47,
+            "title": "If required, does the Company meet minimum FHIR, API, and HIPAA dictated technological standards?",
+            "type": "string",
+            "category": "Data Standards",
+            "subCategory": "Standards for Interoperability, Data Privacy and Data Access",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Yes",
+              "No",
+              "Not applicable"
+            ],
+            "scoring": {
+              "Yes": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Full compliance with required standards ensures regulatory adherence and low risk"
+              },
+              "No": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "Non-compliance creates significant regulatory risk and market barriers"
+              },
+              "Not applicable": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Standards not required reduces compliance burden"
+              }
+            },
+            "helpText": "Compliance with FHIR, API, and HIPAA standards is mandatory for healthcare technology systems handling PHI.",
+            "explanation": "These standards ensure interoperability, security, and privacy protection in healthcare technology implementations.",
+            "reference": {
+              "title": "21st Century Cures Act Requirements",
+              "url": "https://www.healthit.gov/curesrule/",
+              "description": "Comprehensive guide to Cures Act implementation requirements"
+            }
+          },
+          "q47_compliance_documentation": {
+            "questionNumber": "47a",
+            "title": "Please upload compliance assessment or audit reports",
+            "type": "file",
+            "category": "Data Standards",
+            "subCategory": "Compliance Documentation",
+            "inputType": "file",
+            "required": false,
+            "format": "binary",
+            "fileTypes": [
+              "pdf",
+              "doc",
+              "docx"
+            ],
+            "maxFileSize": "15MB",
+            "helpText": "Upload compliance assessments, audit reports, or certification documentation.",
+            "explanation": "Compliance documentation validates adherence to required standards.",
+            "showIf": {
+              "q47_technology_standards": [
+                "Yes"
+              ]
+            },
+            "scoring": {
+              "uploaded": {
+                "score": 1,
+                "level": "Bonus",
+                "rationale": "Compliance documentation validates standards adherence"
+              },
+              "not_uploaded": {
+                "score": 0,
+                "level": "Neutral",
+                "rationale": "No penalty for missing documentation"
+              }
+            }
+          },
+          "q48_emerging_standards": {
+            "questionNumber": 48,
+            "title": "Is the Company prepared for emerging healthcare data standards and regulations?",
+            "type": "string",
+            "category": "Data Standards",
+            "subCategory": "Future Compliance",
+            "inputType": "radio",
+            "required": true,
+            "enum": [
+              "Fully prepared",
+              "Mostly prepared",
+              "Partially prepared",
+              "Not prepared"
+            ],
+            "scoring": {
+              "Fully prepared": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Full preparation ensures continued compliance and competitive advantage"
+              },
+              "Mostly prepared": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Good preparation with minor gaps to address"
+              },
+              "Partially prepared": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Partial preparation requires significant additional effort"
+              },
+              "Not prepared": {
+                "score": 1,
+                "level": "Yellow",
+                "rationale": "Lack of preparation creates future compliance risk"
+              }
+            },
+            "helpText": "Healthcare technology standards continue to evolve, requiring ongoing compliance efforts and system updates.",
+            "explanation": "Proactive preparation for emerging standards ensures continued compliance and competitive advantage."
+          },
+          "q49_additional_regulations": {
+            "questionNumber": 49,
+            "title": "If this is not applicable, just mark n/a. If there are additional key data regulations that should be included in this tool for this Company, please provide 1-2 lines to identify the law(s)/regulation(s) and the requirement that may be applicable.",
+            "type": "string",
+            "category": "Other Areas",
+            "subCategory": "Other pertinent laws and regulations that may be highly relevant",
+            "inputType": "textarea",
+            "required": false,
+            "minLength": 0,
+            "maxLength": 500,
+            "scoring": {
+              "comprehensive_identification": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "Comprehensive identification of additional regulations demonstrates thorough compliance awareness"
+              },
+              "basic_identification": {
+                "score": 2,
+                "level": "Yellow-Green",
+                "rationale": "Basic identification shows awareness but may miss important regulations"
+              },
+              "not_applicable": {
+                "score": 3,
+                "level": "Green",
+                "rationale": "No additional regulations applicable reduces compliance complexity"
+              }
+            },
+            "helpText": "Some companies may be subject to additional regulations based on their specific use cases, geographic locations, or target markets.",
+            "explanation": "Comprehensive regulatory assessment should consider all applicable laws and regulations for the specific business context.",
+            "placeholder": "Describe any additional relevant regulations or mark as 'n/a' if not applicable..."
+          }
+        },
+        "required": [
+          "q47_technology_standards",
+          "q48_emerging_standards"
+        ]
+      }
+    ],
+    "validation": {
+      "totalRequired": 45,
+      "stepValidation": true,
+      "allowPartialSave": true,
+      "autoSave": true,
+      "autoSaveInterval": 30000,
+      "fileValidation": {
+        "required": false,
+        "virusScan": true,
+        "sizeLimit": "100MB",
+        "typeValidation": true
+      }
+    },
+    "ui": {
+      "theme": "elevation-health",
+      "stepperType": "horizontal",
+      "showProgress": true,
+      "showQuestionNumbers": true,
+      "showHelpText": true,
+      "showExplanations": true,
+      "showReferences": true,
+      "showScoring": true,
+      "allowNavigation": true,
+      "confirmBeforeExit": true,
+      "fileUploadUI": {
+        "dragAndDrop": true,
+        "progressBar": true,
+        "previewThumbnails": true,
+        "multipleFiles": false
+      }
+    },
+    "scoring": {
+      "method": "risk-based",
+      "totalMaxScore": 147,
+      "categories": {
+        "reimbursement": {
+          "weight": 0.35,
+          "questions": 18
+        },
+        "privacy_data_access": {
+          "weight": 0.30,
+          "questions": 19
+        },
+        "data_interoperability": {
+          "weight": 0.25,
+          "questions": 9
+        },
+        "data_standards": {
+          "weight": 0.10,
+          "questions": 3
+        }
+      },
+      "riskMatrix": {
+        "lowRisk": {
+          "scoreRange": "2.5-3.0",
+          "level": "Green",
+          "recommendation": "Proceed with confidence - strong investment opportunity"
+        },
+        "moderateRisk": {
+          "scoreRange": "1.5-2.4",
+          "level": "Yellow-Green",
+          "recommendation": "Proceed with conditions - strengthen identified areas"
+        },
+        "highRisk": {
+          "scoreRange": "1.0-1.4",
+          "level": "Yellow",
+          "recommendation": "Proceed with caution - address significant gaps before investment"
+        }
+      }
+    },
+    "fileUpload": {
+      "globalSettings": {
+        "maxTotalSize": "100MB",
+        "allowedTypes": [
+          "pdf",
+          "doc",
+          "docx",
+          "ppt",
+          "pptx",
+          "xls",
+          "xlsx",
+          "jpg",
+          "png",
+          "json",
+          "xml",
+          "pem",
+          "crt"
+        ],
+        "virusScan": true,
+        "encryption": true,
+        "retentionPeriod": "7 years",
+        "accessControl": "role-based"
+      },
+      "storage": {
+        "provider": "aws-s3",
+        "bucket": "elevation-assessment-docs",
+        "region": "us-east-1",
+        "encryption": "AES-256"
+      }
+    },
+    "reporting": {
+      "generateSummary": true,
+      "includeRecommendations": true,
+      "includeScoring": true,
+      "includeFileInventory": true,
+      "exportFormats": [
+        "PDF",
+        "JSON",
+        "CSV"
+      ],
+      "aiSummaryEnabled": true,
+      "complianceReport": true
+    }
+  }

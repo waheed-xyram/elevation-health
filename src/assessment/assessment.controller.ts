@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Req, Param, UseInterceptors, UploadedFile, Query } from '@nestjs/common';
 import { AssessmentService } from './assessment.service';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags, ApiOperation, ApiBody, ApiConsumes,  ApiParam } from '@nestjs/swagger';
 import { CreateAssessmentDto } from './dto/create-assessment.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { S3Service } from '../aws/s3.service';
@@ -41,6 +41,21 @@ export class AssessmentController {
   }
 
   @Post('upload/:questionId')
+  @ApiOperation({ summary: 'Upload a file for a question' })
+  @ApiParam({ name: 'questionId', required: true, type: String })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+      required: ['file'],
+    },
+  })
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
@@ -49,16 +64,14 @@ export class AssessmentController {
   ) {
     const userId = req.user?.userId;
     const fileKey = `${questionId}-${userId}-${file.originalname}`;
-
-    await this.s3Service.uploadFile(
-      file.buffer,        
-      fileKey,            
-      file.mimetype);    
-
+  
+    const s3result = await this.s3Service.uploadFile(file.buffer, fileKey, file.mimetype);
+  
     const url = `https://${process.env.S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
-
+  
     return { url };
   }
+  
 
 }
 

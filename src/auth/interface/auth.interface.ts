@@ -1,5 +1,7 @@
+import { ObjectId } from 'mongoose';
+
 export interface IUserAuthentication {
-  _id: string;
+  _id?: string | ObjectId;
   email: string;
 }
 

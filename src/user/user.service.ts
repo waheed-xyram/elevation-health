@@ -15,20 +15,23 @@ export class UserService {
   ){}
   async create(createUserDto: CreateUserDto) {
 
-    const saltRounds = 10;
+    console.log(createUserDto)
+
+  const saltRounds = Number(process.env.SALT_ROUNDS);
   const hashedPassword = await bcrypt.hash(createUserDto.password, saltRounds);
 
     const createUser = await this.userModel.create({
-      firtName: createUserDto.firstName,
+      firstName: createUserDto.firstName,
       lastName: createUserDto.lastName,
       email: createUserDto.email,
       password: hashedPassword,
       mobileNumber: createUserDto.mobileNumber,
-      address: createUserDto.address,
+      address:(createUserDto.address),
       roleId: createUserDto.roleId,
     })
     
-    return createUser.populate(['firstName', 'lastName']);
+    console.log(`createUser ${createUser}`)
+    return createUser;
   }
 
   findAll() {

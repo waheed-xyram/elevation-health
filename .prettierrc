@@ -4,5 +4,7 @@
   "formatOnSave": true,
   "semi": true,
   "parser":"flow",
+  "tabWidth": 2,
+  "printWidth": 100,
   "endOfLine": "lf"
 }

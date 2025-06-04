@@ -4,10 +4,7 @@ import { AssessmentController } from './assessment.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { Assessment, AssessmentSchema } from './schemas/assessment.schema';
-import {
-  AssessmentResponse,
-  AssessmentResponseSchema,
-} from './schemas/assessment-response.schema';
+import { AssessmentResponse, AssessmentResponseSchema } from './schemas/assessment-response.schema';
 import { AwsModule } from '../aws/s3.module';
 
 @Module({

@@ -19,7 +19,10 @@ import { ReportModule } from './report/report.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: process.env.NODE_ENV === 'production' ? '.env.prod' : '.env.local',
+    }),
 
     MongooseModule.forRoot(`${process.env.MONGO_DB_URI}`, {
       onConnectionCreate: (connection: Connection) => {

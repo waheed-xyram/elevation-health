@@ -9,13 +9,6 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 export class ReportController {
   constructor(private readonly reportService: ReportService) {}
 
-  @Get('screenshot')
-  async getScreenshot(@Query('url') url: string, @Res() res: Response) {
-    const image = await this.reportService.generateScreenshot(url);
-    res.setHeader('Content-Type', 'image/png');
-    res.send(image);
-  }
-
   @Get('pdf')
   async getPDF(@Query('url') url: string, @Res() res: Response,  @Headers('authorization') authHeader: string) {
     const pdf = await this.reportService.generatePDF(url, authHeader);

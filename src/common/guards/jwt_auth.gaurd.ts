@@ -5,7 +5,7 @@ import { Request } from 'express';
 import { AuthService } from '../../auth/auth.service';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 import { Model } from 'mongoose';
-import { UserDocument } from 'src/user/schemas/user.schema';
+import { UserDocument } from '../../user/schemas/user.schema';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {

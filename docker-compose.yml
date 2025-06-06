@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: elevation-health-api
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.local
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - mongodb
+    shm_size: "1gb" # 
+    networks:
+      - app-network
+
+  mongodb:
+    container_name: elevation-mongodb
+    image: mongo:8
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - app-network
+
+volumes:
+  mongo-data:
+
+networks:
+  app-network:

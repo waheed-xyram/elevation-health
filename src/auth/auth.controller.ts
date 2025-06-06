@@ -22,7 +22,7 @@ export class AuthController {
   async login(@Body() body:LoginDto){
     const user: IUserAuthentication = await this.authService.validateUser(body.email, body.password);
 
-    const token = this.authService.generateToken({ userId: user._id, email: user.email }, process.env.JWT_SECRET_KEY, process.env.JWT_EXPIRY);
+    const token = this.authService.generateToken({ userId: user._id, email: user.email, role: user.roleId }, process.env.JWT_SECRET_KEY, process.env.JWT_EXPIRY);
 
     await this.authService.saveToken(body.email, token);
 

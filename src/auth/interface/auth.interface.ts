@@ -3,7 +3,7 @@ import { ObjectId } from 'mongoose';
 export interface IUserAuthentication {
   _id?: string | ObjectId;
   email: string;
-  roleId?: number;
+  role?: string;
 }
 
 export interface IUserDetails extends IUserAuthentication {

@@ -1,8 +1,9 @@
 version: '3.8'
 
 services:
-  app:
+  elevation-health-api:
     container_name: elevation-health-api
+    image: elevation-health-api:1.0.0
     build:
       context: .
       dockerfile: Dockerfile.dev

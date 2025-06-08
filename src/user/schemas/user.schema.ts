@@ -24,7 +24,7 @@ export class User {
   address: string;
 
   @Prop()
-  roleId: number;
+  role: string;
 
   @Prop()
   token: string;

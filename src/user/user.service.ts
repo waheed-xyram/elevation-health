@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {User} from './schemas/user.schema';
 import * as bcrypt from 'bcrypt';
+import { IUser } from './interface/user.interface';
 
 
 @Injectable()
@@ -27,19 +28,20 @@ export class UserService {
       password: hashedPassword,
       mobileNumber: createUserDto.mobileNumber,
       address:(createUserDto.address),
-      roleId: createUserDto.roleId,
+      role: createUserDto.role || 'Incubator',
     })
     
-    console.log(`createUser ${createUser}`)
     return createUser;
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findAll() {
+    const users = await this.userModel.find({},'_id firstName lastName email mobileNumber address role').lean()
+    return users;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string) {
+    const users = await this.userModel.find({_id:id},'_id firstName lastName email mobileNumber address role').lean()
+    return users;
   }
 
   update(id: number) {

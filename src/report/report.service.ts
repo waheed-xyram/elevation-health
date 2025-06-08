@@ -9,7 +9,7 @@ export class ReportService {
   }
   
 
-  async generatePDF(url: string, authHeader?: string): Promise<Buffer> {
+  async generatePDF(url: string, authHeader?: string, userId?: string): Promise<Buffer> {
 
     const browser = await puppeteer.launch({
       headless: true,

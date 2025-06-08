@@ -1,12 +1,11 @@
 import {
   IsString,
-  IsInt,
   IsEmail,
   IsNotEmpty,
   IsJSON,
   Matches,
-  Min,
   IsStrongPassword,
+  IsIn,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -48,7 +47,7 @@ export class CreateUserDto {
   address: string;
 
   @ApiProperty()
-  @IsInt()
-  @Min(1)
-  roleId: number;
+  @IsString()
+  @IsIn(['Admin', 'Incubator'])
+  role: string;
 }

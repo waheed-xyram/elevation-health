@@ -14,5 +14,5 @@ export class UserResponseDto {
   lastName: string;
 
   @Expose()
-  roleId: number;
+  role: string;
 }

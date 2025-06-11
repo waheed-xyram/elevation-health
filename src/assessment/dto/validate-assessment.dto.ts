@@ -19,17 +19,11 @@ export class StepQuestionDto {
   ignore?: boolean;
 }
 
-export class CreateAssessmentDto {
+export class ValidateAssessmentDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsObject()
   @ValidateNested({ each: true })
   @Type(() => StepQuestionDto)
-  assessmentResponse: Record<string, StepQuestionDto>;
-
-  @ApiProperty({enum:['ToDo', 'InProgress', 'Completed']})
-  @IsNotEmpty()
-  @IsString()
-  @IsIn(['ToDo', 'In Progress', 'Completed'])
-  status?: 'ToDo' | 'In Progress' | 'Completed';
+  assessmentResponse: Record<string, StepQuestionDto>;  
 }

@@ -1,19 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import * as puppeteer from 'puppeteer-core';
-import { executablePath as localChromePath } from 'puppeteer';
+import { executablePath } from 'puppeteer';
+import * as os from 'os';
+
+
+console.log(executablePath());
 
 @Injectable()
 export class ReportService {
   getExecutablePath(): string {
-    return process.env.PUPPETEER_EXECUTABLE_PATH || localChromePath();
+    return process.env.PUPPETEER_EXECUTABLE_PATH;
   }
   
 
   async generatePDF(url: string, authHeader?: string, userId?: string): Promise<Buffer> {
 
+    const platform = os.platform();
+    let executablePath: string;
+
+  if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+    executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+  } else {
+    if (platform === 'win32') {
+      executablePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+    } else if (platform === 'darwin') {
+      executablePath = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+    } else {
+      executablePath = '/usr/bin/chromium'; // or 'chromium-browser'
+    }
+  }
+
     const browser = await puppeteer.launch({
       headless: true,
-      executablePath: this.getExecutablePath(),
+      executablePath,
       protocolTimeout: 120000,
       args: [
         '--no-sandbox',

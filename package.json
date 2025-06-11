@@ -18,8 +18,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "seed-dev": "ts-node src/seeder/seeder.main",
-    "seed": "node dist/seeder/seed.js",
+    "seed:dev": "ts-node src/seeder/seeder.main",
+    "seed": "node dist/seeder/seed.main.js",
     "build:docker": "./build-and-share.sh"
   },
   "dependencies": {

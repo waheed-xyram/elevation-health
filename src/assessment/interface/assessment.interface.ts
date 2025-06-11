@@ -34,11 +34,12 @@ export interface IAssessmentResponseQuestion {
 export interface IAssessmentResponse extends Document {
   assessmentResponse: IAssessmentResponseQuestion;
   status: IAssessmentStatus;
+  assessmentAttempt: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
 export interface IAssessmentStatus {
-  ToDO: string;
+  ToDo: string;
   InProgress: string;
   Completed: string;
 }
@@ -67,4 +68,5 @@ export interface IAssessmentResult {
   name: string;
   description: string;
   assessmentPercentage: string;
+  assessmentAttempt?:number;
 }

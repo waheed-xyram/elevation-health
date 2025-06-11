@@ -1,5 +1,5 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Document, Types } from 'mongoose';
+import { HydratedDocument, Document } from 'mongoose';
 
 export type AssessmentResponseDocument = HydratedDocument<AssessmentResponse>;
 
@@ -22,6 +22,9 @@ export class AssessmentResponse extends Document {
 
   @Prop({ type: String, required: true})
   status: string;
+
+  @Prop()
+  assessmentAttempt: number;
 
   updatedAt?: Date;
 

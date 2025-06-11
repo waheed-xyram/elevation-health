@@ -45,9 +45,9 @@ export class AssessmentService {
           }
         }]).exec();
 
-      const assessments = await this.assessmentModel.find().select('_id name description status assessmentPercentage updatedAt').lean();
+      const assessments = await this.assessmentModel.find().select('_id name description status assessmentPercentage updatedAt assessmentAttempt').lean();
 
-      const modifiedAssessments= assessments.map( res => ({...res, 'assessmentPercentage':'0%', 'status':'ToDo'}))
+      const modifiedAssessments= assessments.map( res => ({...res, 'assessmentPercentage':'0%', 'status':'ToDo', 'assessmentAttempt':0}))
   
       
       if (respondantAssessment.length > 0) {
@@ -91,8 +91,62 @@ export class AssessmentService {
     }
   }
 
+  private getMissingQuestions(steps: any[], assessmentResponse: CreateAssessmentDto){
+    return steps.map(({title, required = []}) => {
+      const missing = required.filter((qkey) => !this.isQuestionAnswered(title, qkey, assessmentResponse));
+
+      return missing.length ? {title, missingQuestions:missing} : {title,missingQuestions:null};
+    })
+  }
+
+  private isQuestionAnswered(title: string, questionKey: string, response: CreateAssessmentDto): boolean {
+  
+    const stepSection = response.assessmentResponse?.[title];
+    if (!stepSection) return false;
+  
+    const answer = stepSection[questionKey];
+    if (!answer) return false;
+  
+    return answer.value !== null;
+  }
+  
+  
+  
+  private async validateAssessmentResponse(assessmentResponse: CreateAssessmentDto, assessmentId: string){
+    const assessment = await this.assessmentModel.findOne({_id: assessmentId}).select('_id name steps').lean()
+    
+    if(!assessment) throw new Error(`Assessment not found`)
+
+      return this.getMissingQuestions(assessment.steps, assessmentResponse)
+  }
+
+  private async getAssessmentAttempts(assessmentId: string, userId: string){
+    const assessment = await this.assessmentResponseModel.findOne({__id: assessmentId, userId}).lean()
+
+    console.log(`assessment attempt ${assessment}`)
+    return assessment;
+  }
+
+  async validateAssessment(assessmentResponse: CreateAssessmentDto, assessmentId: string){
+    const assessmentValidation = await this.validateAssessmentResponse(assessmentResponse, assessmentId);
+
+      if(assessmentValidation && assessmentValidation.length > 0){
+        return {message:'Assessment Incomplete. Please answer all questions',missedQuestions: assessmentValidation};
+      }
+  }
+
   async saveAssessmentResponse(assessmentResponse: CreateAssessmentDto, userId: string, assessmentId: string){
     try {
+      let assessmentAttemptCount = 0;
+      const assessmentValidation = await this.validateAssessmentResponse(assessmentResponse, assessmentId);
+
+      const assessmentAttempts = await this.getAssessmentAttempts(assessmentId, userId);
+      assessmentAttemptCount = (assessmentAttempts == null) ? assessmentAttemptCount++ : Number(assessmentAttempts) + 1 ;
+
+      if(assessmentValidation && assessmentValidation.length > 0){
+        return {message:'Assessment Incomplete. Please answer all questions',missedQuestions: assessmentValidation};
+      }
+
       const doAssessmentReponseExist = await this.assessmentResponseModel.find({assessmentId});
 
       if(doAssessmentReponseExist && doAssessmentReponseExist.length > 0){
@@ -107,6 +161,7 @@ export class AssessmentService {
         userId: userId,
         assessmentId: assessmentId,
         status: assessmentResponse.status,
+        assessmentAttempt: assessmentAttemptCount,
         assessmentResponse: JSON.stringify(assessmentResponse.assessmentResponse),
         assessmentPercentage: JSON.stringify(assessmentScore.assessmentPercentage),
         assessmentOverallPercentage: `${assessmentScore.assessmentOverallPercentage}%` || '0%',
@@ -130,7 +185,8 @@ export class AssessmentService {
       const assessmentCalculation = this.calculateAssessmentScore (assessmentResponse.assessmentResponse)
 
       await this.assessmentResponseModel.updateOne({userId, assessmentId},{$set:{
-        status: assessmentResponse.status, 
+        status: assessmentResponse.status,
+        assessmentAttempt: 1, 
         assessmentResponse:JSON.stringify( assessmentResponse.assessmentResponse),
         assessmentPercentage:JSON.stringify(assessmentCalculation.assessmentPercentage),
         assessmentOverallPercentage: `${assessmentCalculation.assessmentOverallPercentage}%` || '0%',
@@ -245,6 +301,40 @@ async generateAssessmentReport(assessmentId: string, userId: string){
     return assessmentScoreObj;
   } catch (error) {
     throw new Error(`Failed to generate assessment Report: ${error}`)
+  }
+}
+
+normalizeStatus(status: string | undefined): string {
+  console.log('status',status)
+  if (!status) return '';  // empty string means skip
+  return status.toLowerCase().replace(/\s+/g, '_');
+}
+
+async getAssessemntStats(userId: string){
+  try{
+    const userAssessments = await this.assessmentResponseModel.find({userId}).lean();
+
+    const total_assessmens = userAssessments.length;
+
+    const counts = {
+      in_progress: 0,
+      completed: 0,
+      todo: 0,
+    };
+
+    for (const assessment of userAssessments) {
+      const normStatus = this.normalizeStatus(assessment.status);
+      if (counts.hasOwnProperty(normStatus)) {
+        counts[normStatus]++;
+      }
+    }
+
+    return {
+      total_assessmens,
+      ...counts,
+    };
+  }catch(error){
+    throw new Error(`Failed to get assessment assessment: ${error}`)
   }
 }
 }

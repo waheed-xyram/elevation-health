@@ -17,6 +17,9 @@ export class SeederService {
         const datadir = path.join(__dirname,'data');
         const files = await glob(`${datadir.replace(/\\/g, '/')}/*.json`);
 
+        await this.assessmentModel.deleteMany({});
+        console.log('Existing assessments deleted.');
+
         const seedPromises = files.map(async (filepath)=>{
             const content = await fs.readFile(filepath, 'utf-8');
             const jsonData = JSON.parse(content) as IAssessment;

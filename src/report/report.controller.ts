@@ -2,8 +2,8 @@ import { Controller, Get, Query, Res, Headers, Param } from '@nestjs/common';
 import { ReportService } from './report.service';
 import { Response } from 'express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Roles } from 'src/common/decorators/roles.decorator';
-import { UserRole } from 'src/common/enum/role.enum';
+import { Roles } from '../common/decorators/roles.decorator';
+import { UserRole } from '../common/enum/role.enum';
 
 @ApiTags('Report')
 @Controller('report')
@@ -12,10 +12,13 @@ export class ReportController {
   constructor(private readonly reportService: ReportService) {}
 
   @Get('userReport')
-  async getUserReport(@Query('url') url: string, @Res() res: Response,  @Headers('authorization') authHeader: string) {
+  async getUserReport(
+    @Query('url') url: string, 
+    @Res() res: Response,  
+    @Headers('authorization') authHeader: string) {
     const pdf = await this.reportService.generatePDF(url, authHeader);
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename="report.pdf"');
+    res.setHeader('Content-Disposition', `attachment; filename= Elevation-Health-${new Date()}.pdf`);
     res.send(pdf);
   }
 
@@ -28,7 +31,7 @@ export class ReportController {
     @Param('userId') userId: string){
     const pdf = await this.reportService.generatePDF(url, authHeader, userId);
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename="report.pdf"');
+    res.setHeader('Content-Disposition', `attachment; filename= Elevation-Health-${new Date()}.pdf`);
     res.send(pdf);
   }
 }

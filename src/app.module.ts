@@ -24,7 +24,7 @@ import { ReportModule } from './report/report.module';
       envFilePath: process.env.NODE_ENV === 'production' ? '.env.prod' : '.env.local',
     }),
 
-    MongooseModule.forRoot(`${process.env.MONGO_DB_URI}`, {
+    MongooseModule.forRoot(`${process.env.MONGODB_URI}`, {
       onConnectionCreate: (connection: Connection) => {
         connection.on('connected', () => console.log('connected'));
         connection.on('open', () => console.log('open'));
